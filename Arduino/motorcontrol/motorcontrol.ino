@@ -19,11 +19,11 @@ void serialEvent()
   if (Serial.available() > 0) {
     // read the oldest byte in the serial buffer:
     incomingByte = Serial.read();
-    if (incomingByte == 'WW') {
+    if (incomingByte == 'W') {
       command = 1;
     } else if (incomingByte == 'X') {
       command = 2;
-    } else if (incomingByte == 'SS') {
+    } else if (incomingByte == 'S') {
       command = 3;
     } else if (incomingByte == 'Q') {
       command = 4;
@@ -51,7 +51,7 @@ void loop()
   //command = -1;
   switch(command){
     case 0:
-    arduinoMotorController._move(0);
+    //arduinoMotorController._move(0);
     //arduinoMotorController._stop(tangentialSpeed);
     command = -1;
         break;
@@ -64,7 +64,7 @@ void loop()
     command = 0;
         break;
     case 3: //S
-    arduinoMotorController._stop(tangentialSpeed);
+    arduinoMotorController._move(0);
     command = 0;
         break;
     case 4: //Q
@@ -76,11 +76,11 @@ void loop()
     command = 0;
         break;
     case 6:  //A
-    arduinoMotorController._pointTurn(tangentialSpeed);
+    arduinoMotorController._pointTurn(tangentialSpeed/2);
     command = 0;
         break;
     case 7:  //D
-    arduinoMotorController._pointTurn(-tangentialSpeed);
+    arduinoMotorController._pointTurn(-tangentialSpeed/2);
     command = 0;
         break;
     case 8: //Z
@@ -96,5 +96,5 @@ void loop()
   //arduinoMotorController._pointTurn(-300);
   //arduinoMotorController._move(300);
   //arduinoMotorController._stop(300);
-  delay(500);
+  delay(100);
 }
