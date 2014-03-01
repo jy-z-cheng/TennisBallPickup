@@ -7,6 +7,8 @@ int incomingByte;    // a variable to read incoming serial data into
 
 int command;
 
+int tangentialSpeed = 200;
+
 void setup()
 {
   Serial.begin(115200);
@@ -20,24 +22,25 @@ void serialEvent()
     // read the oldest byte in the serial buffer:
     incomingByte = Serial.read();
     if (incomingByte == 'W') {
-      command = 1;
+      arduinoMotorController._move(tangentialSpeed);
     } else if (incomingByte == 'X') {
-      command = 2;
+      arduinoMotorController._move(-tangentialSpeed);
     } else if (incomingByte == 'S') {
-      command = 3;
+      arduinoMotorController._move(0);
     } else if (incomingByte == 'Q') {
-      command = 4;
+      arduinoMotorController._swingTurn(tangentialSpeed/2, tangentialSpeed);
     } else if (incomingByte == 'E') {
-      command = 5;
+      arduinoMotorController._swingTurn(tangentialSpeed, tangentialSpeed/2);
     } else if (incomingByte == 'A') {
-      command = 6;
+      arduinoMotorController._pointTurn(tangentialSpeed/2);
     } else if (incomingByte == 'D') {
-      command = 7;
+      arduinoMotorController._pointTurn(-tangentialSpeed/2);
     } else if (incomingByte == 'Z') {
-      command = 8;
+      arduinoMotorController._crudeTurn(tangentialSpeed);
     } else if (incomingByte == 'C') {
-      command = 9;
+      arduinoMotorController._crudeTurn(-tangentialSpeed);
     } else {
+      //arduinoMotorController._move(0);
       command = 0;
     }
   }
@@ -46,55 +49,9 @@ void serialEvent()
 
 void loop()
 {
-  int tangentialSpeed = 300;
-  
-  //command = -1;
-  switch(command){
-    case 0:
-    //arduinoMotorController._move(0);
-    //arduinoMotorController._stop(tangentialSpeed);
-    command = -1;
-        break;
-    case 1: //W
-        arduinoMotorController._move(tangentialSpeed);
-    command = 0;
-        break;
-    case 2: //X
-    arduinoMotorController._move(-tangentialSpeed);
-    command = 0;
-        break;
-    case 3: //S
-    arduinoMotorController._move(0);
-    command = 0;
-        break;
-    case 4: //Q
-    arduinoMotorController._swingTurn(tangentialSpeed/2, tangentialSpeed);
-    command = 0;
-        break;
-    case 5:  //E
-    arduinoMotorController._swingTurn(tangentialSpeed, tangentialSpeed/2);
-    command = 0;
-        break;
-    case 6:  //A
-    arduinoMotorController._pointTurn(tangentialSpeed/2);
-    command = 0;
-        break;
-    case 7:  //D
-    arduinoMotorController._pointTurn(-tangentialSpeed/2);
-    command = 0;
-        break;
-    case 8: //Z
-    arduinoMotorController._crudeTurn(tangentialSpeed);
-    command = 0;
-        break;
-    case 9: //C
-    arduinoMotorController._crudeTurn(-tangentialSpeed);
-    command = 0;
-        break;
-  }
-
+  //Serial.write('O');
   //arduinoMotorController._pointTurn(-300);
   //arduinoMotorController._move(300);
   //arduinoMotorController._stop(300);
-  delay(100);
+  //delay(50);
 }
