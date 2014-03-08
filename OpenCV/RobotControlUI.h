@@ -25,9 +25,6 @@ namespace TennisBallCollection {
 			RobotControlUI(MotorController &mc): mcPointer(&mc), ipPointer(&ImageProcessor(*mcPointer))
 			{
 				InitializeComponent();
-
-				(*ipPointer).setEnable(true);
-				(*ipPointer).setCalibrationMode(false);
 			}
 
 		protected:
@@ -293,6 +290,7 @@ namespace TennisBallCollection {
 				this->button1->TabIndex = 0;
 				this->button1->Text = L"<< Crude";
 				this->button1->UseVisualStyleBackColor = true;
+				this->button1->Click += gcnew System::EventHandler(this, &RobotControlUI::button1_Click);
 				// 
 				// button2
 				// 
@@ -314,6 +312,7 @@ namespace TennisBallCollection {
 				this->button3->TabIndex = 2;
 				this->button3->Text = L"Crude >>";
 				this->button3->UseVisualStyleBackColor = true;
+				this->button3->Click += gcnew System::EventHandler(this, &RobotControlUI::button3_Click);
 				// 
 				// button4
 				// 
@@ -324,6 +323,7 @@ namespace TennisBallCollection {
 				this->button4->TabIndex = 3;
 				this->button4->Text = L"<< Swing";
 				this->button4->UseVisualStyleBackColor = true;
+				this->button4->Click += gcnew System::EventHandler(this, &RobotControlUI::button4_Click);
 				// 
 				// button5
 				// 
@@ -334,6 +334,7 @@ namespace TennisBallCollection {
 				this->button5->TabIndex = 4;
 				this->button5->Text = L"Stop";
 				this->button5->UseVisualStyleBackColor = true;
+				this->button5->Click += gcnew System::EventHandler(this, &RobotControlUI::button5_Click);
 				// 
 				// button6
 				// 
@@ -344,6 +345,7 @@ namespace TennisBallCollection {
 				this->button6->TabIndex = 5;
 				this->button6->Text = L"Swing >>";
 				this->button6->UseVisualStyleBackColor = true;
+				this->button6->Click += gcnew System::EventHandler(this, &RobotControlUI::button6_Click);
 				// 
 				// button7
 				// 
@@ -354,6 +356,7 @@ namespace TennisBallCollection {
 				this->button7->TabIndex = 6;
 				this->button7->Text = L"<< Point";
 				this->button7->UseVisualStyleBackColor = true;
+				this->button7->Click += gcnew System::EventHandler(this, &RobotControlUI::button7_Click);
 				// 
 				// button8
 				// 
@@ -364,6 +367,7 @@ namespace TennisBallCollection {
 				this->button8->TabIndex = 7;
 				this->button8->Text = L"\\/";
 				this->button8->UseVisualStyleBackColor = true;
+				this->button8->Click += gcnew System::EventHandler(this, &RobotControlUI::button8_Click);
 				// 
 				// button9
 				// 
@@ -374,6 +378,7 @@ namespace TennisBallCollection {
 				this->button9->TabIndex = 8;
 				this->button9->Text = L"Point >>";
 				this->button9->UseVisualStyleBackColor = true;
+				this->button9->Click += gcnew System::EventHandler(this, &RobotControlUI::button9_Click);
 				// 
 				// label1
 				// 
@@ -468,6 +473,7 @@ namespace TennisBallCollection {
 				//motorController.start("\\\\.\\COM17");
 
 				//ImageProcessor ip(*mcPointer);
+				(*ipPointer).setCalibrationMode(false);
 				(*ipPointer).setEnable(true);
 				(*ipPointer).process();
 
@@ -482,5 +488,37 @@ namespace TennisBallCollection {
 
 				(*ipPointer).setEnable(false);
 			}
+		private: 
+			System::Void button1_Click(System::Object^  sender, System::EventArgs^  e)
+				{
+				}
+		private: 
+			System::Void button3_Click(System::Object^  sender, System::EventArgs^  e)
+				{
+				}
+		private: 
+			System::Void button4_Click(System::Object^  sender, System::EventArgs^  e)
+				{
+				}
+		private: 
+			System::Void button5_Click(System::Object^  sender, System::EventArgs^  e)
+				{
+				}
+		private: 
+			System::Void button6_Click(System::Object^  sender, System::EventArgs^  e)
+				{
+				}
+		private: 
+			System::Void button7_Click(System::Object^  sender, System::EventArgs^  e)
+				{
+				}
+		private: 
+			System::Void button8_Click(System::Object^  sender, System::EventArgs^  e)
+				{
+				}
+		private: 
+			System::Void button9_Click(System::Object^  sender, System::EventArgs^  e)
+				{
+				}
 };
 }

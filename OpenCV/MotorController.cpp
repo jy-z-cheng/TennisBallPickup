@@ -1,8 +1,5 @@
 #include "MotorController.h"
-
-enum { MOVE_FORWARD, MOVE_BACKWARD, POINTTURN_LEFT, POINTTURN_RIGHT, SWINGTURN_LEFT, SWINGTURN_RIGHT, CRUDETURN_LEFT, CRUDETURN_RIGHT, NOTFOUND_PATROL };
-
-enum { TENNISBALL_NOTFOUND, TENNISBALL_FRONT, TENNISBALL_LEFT, TENNISBALL_RIGHT };
+#include"ImageProcessor.h"
 
 MotorController::MotorController(void)
 {
@@ -29,39 +26,39 @@ void MotorController::sendRawCommand (int command)
 
 	switch (command)
 	{
-	case MOVE_FORWARD:
+	case MotorController::MOVE_FORWARD:
 		SP->WriteData("W",dataLength);
 		printf("move forward\n");
 		break;
-	case MOVE_BACKWARD:
+	case MotorController::MOVE_BACKWARD:
 		SP->WriteData("X",dataLength);
 		printf("move backward\n");
 		break;
-	case POINTTURN_LEFT:
+	case MotorController::POINTTURN_LEFT:
 		SP->WriteData("A",dataLength);
 		printf("point turn left\n");
 		break;
-	case POINTTURN_RIGHT:
+	case MotorController::POINTTURN_RIGHT:
 		SP->WriteData("D",dataLength);
 		printf("point turn right\n");
 		break;
-	case SWINGTURN_LEFT:
+	case MotorController::SWINGTURN_LEFT:
 		SP->WriteData("A",dataLength);
 		printf("swing turn left\n");
 		break;
-	case SWINGTURN_RIGHT:
+	case MotorController::SWINGTURN_RIGHT:
 		SP->WriteData("D",dataLength);
 		printf("swing turn right\n");
 		break;
-	case CRUDETURN_LEFT:
+	case MotorController::CRUDETURN_LEFT:
 		SP->WriteData("A",dataLength);
 		printf("crude turn left\n");
 		break;
-	case CRUDETURN_RIGHT:
+	case MotorController::CRUDETURN_RIGHT:
 		SP->WriteData("D",dataLength);
 		printf("crude turn right\n");
 		break;
-	case NOTFOUND_PATROL:
+	case MotorController::NOTFOUND_PATROL:
 		SP->WriteData("L",dataLength);
 		printf("notfound\n");
 		break;
@@ -75,17 +72,17 @@ void MotorController::sendCommandByVision (int visionCommand)
 {
 	switch (visionCommand)
 	{
-	case TENNISBALL_FRONT:
-		sendRawCommand(MOVE_FORWARD);
+	case ImageProcessor::TENNISBALL_FRONT:
+		sendRawCommand(MotorController::MOVE_FORWARD);
 		break;
-	case TENNISBALL_LEFT:
-		sendRawCommand(POINTTURN_LEFT);
+	case ImageProcessor::TENNISBALL_LEFT:
+		sendRawCommand(MotorController::POINTTURN_LEFT);
 		break;
-	case TENNISBALL_RIGHT:
-		sendRawCommand(POINTTURN_RIGHT);
+	case ImageProcessor::TENNISBALL_RIGHT:
+		sendRawCommand(MotorController::POINTTURN_RIGHT);
 		break;
-	case TENNISBALL_NOTFOUND:
-		sendRawCommand(NOTFOUND_PATROL);
+	case ImageProcessor::TENNISBALL_NOTFOUND:
+		sendRawCommand(MotorController::NOTFOUND_PATROL);
 		break;
 	default:
 		//SP->WriteData("S",dataLength);

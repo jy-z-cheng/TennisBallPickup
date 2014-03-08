@@ -19,6 +19,7 @@ public:
 	void process();
 	void setCalibrationMode(bool enable);
 	void setEnable(bool enable);
+	enum TennisBallLocation { TENNISBALL_NOTFOUND, TENNISBALL_FRONT, TENNISBALL_LEFT, TENNISBALL_RIGHT };
 
 private:
 	MotorController motorController;

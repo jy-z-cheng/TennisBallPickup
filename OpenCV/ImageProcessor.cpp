@@ -17,8 +17,6 @@
 
 enum { MOVE_FORWARD, MOVE_BACKWARD, POINTTURN_LEFT, POINTTURN_RIGHT, SWINGTURN_LEFT, SWINGTURN_RIGHT, CRUDETURN_LEFT, CRUDETURN_RIGHT };
 
-enum { TENNISBALL_NOTFOUND, TENNISBALL_FRONT, TENNISBALL_LEFT, TENNISBALL_RIGHT };
-
 const int LAPTOP = 0;
 const int WEBCAM = 1;
 
@@ -33,7 +31,7 @@ const int laptopFilter[6] = {28, 77, 75, 256, 74, 256};
 // fish bowel - WEBCAM
 //const int laptopFilter[6] = {14, 53, 32, 256, 0, 256};
 
-int state = TENNISBALL_NOTFOUND;
+int state = ImageProcessor::TENNISBALL_NOTFOUND;
 
 int cameraInUse = LAPTOP;
 
@@ -170,28 +168,28 @@ int ImageProcessor::checkPosition(bool haveBall, TennisBall tennisBall)
 	if (haveBall) {
 		if (tennisBall.getXPosition() < 0)
 		{
-			state = TENNISBALL_NOTFOUND;
+			state = ImageProcessor::TENNISBALL_NOTFOUND;
 		}
 		else if (x < leftLimit)
 		{
 			//SP->WriteData("A",dataLength);
-			state = TENNISBALL_LEFT;
+			state = ImageProcessor::TENNISBALL_LEFT;
 
 		}
 		else if (x > rightLimit)
 		{
 			//SP->WriteData("D",dataLength);
-			state = TENNISBALL_RIGHT;
+			state = ImageProcessor::TENNISBALL_RIGHT;
 		}
 		else
 		{
-			state = TENNISBALL_FRONT;
+			state = ImageProcessor::TENNISBALL_FRONT;
 			//SP->WriteData("W",dataLength);
 		}
 		//printf("We see a ball!\n");
 	} else {
 		//SP->WriteData("S",dataLength);
-		state = TENNISBALL_NOTFOUND;
+		state = ImageProcessor::TENNISBALL_NOTFOUND;
 		//printf("We do not sees a ball!\n");
 	}
 
@@ -254,7 +252,7 @@ void ImageProcessor::trackFilteredObject(Mat threshold,Mat HSV, Mat &cameraFeed)
 	}
 	else
 	{
-		state = TENNISBALL_NOTFOUND;
+		state = ImageProcessor::TENNISBALL_NOTFOUND;
 	}
 }
 
