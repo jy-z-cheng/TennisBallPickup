@@ -1,0 +1,12 @@
+*.tlog
+*.log
+*.Cache
+*.pdb
+*.user
+*.filters
+*.obj
+*.bi
+*.lastbuildstate
+*.resources
+*.vcxproj
+*.resx
