@@ -7,7 +7,7 @@ int incomingByte;    // a variable to read incoming serial data into
 
 int command;
 
-int tangentialSpeed = 200;
+int tangentialSpeed = 300;
 
 void setup()
 {
@@ -39,6 +39,8 @@ void serialEvent()
       arduinoMotorController._crudeTurn(tangentialSpeed);
     } else if (incomingByte == 'C') {
       arduinoMotorController._crudeTurn(-tangentialSpeed);
+    } else if (incomingByte == 'L') {
+      arduinoMotorController._crudeTurn(250);
     } else {
       //arduinoMotorController._move(0);
       command = 0;
