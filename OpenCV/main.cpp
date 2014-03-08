@@ -21,13 +21,13 @@ using namespace System::Windows::Forms;
 int main(int argc, char* argv[])
 {
 
-	//MotorController motorController;
-	//motorController.start("\\\\.\\COM17");
+	MotorController motorController;
+	motorController.start("\\\\.\\COM17");
 	
 	Application::EnableVisualStyles();
     Application::SetCompatibleTextRenderingDefault(false);
 
-	TennisBallCollection::RobotControlUI form;
+	TennisBallCollection::RobotControlUI form(motorController);
     Application::Run(%form);
 
 	/*
