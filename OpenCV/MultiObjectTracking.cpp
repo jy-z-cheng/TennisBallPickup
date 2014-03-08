@@ -22,8 +22,13 @@
 #include <tchar.h>
 #include "TennisBall.h"
 #include "SerialClass.h"
+#include "MovementController.h"
 
 using namespace cv;
+
+enum { MOVE_FORWARD, MOVE_BACKWARD, POINTTURN_LEFT, POINTTURN_RIGHT, SWINGTURN_LEFT, SWINGTURN_RIGHT, CRUDETURN_LEFT, CRUDETURN_RIGHT };
+
+enum { TENNISBALL_NOTFOUND, TENNISBALL_FRONT, TENNISBALL_LEFT, TENNISBALL_RIGHT };
 
 const int LAPTOP = 0;
 const int WEBCAM = 1;
@@ -38,11 +43,6 @@ const int laptopFilter[6] = {28, 77, 75, 256, 74, 256};
 
 // fish bowel - WEBCAM
 //const int laptopFilter[6] = {14, 53, 32, 256, 0, 256};
-
-const int TENNISBALL_FORWARD = 0;
-const int TENNISBALL_LEFT = 1;
-const int TENNISBALL_RIGHT = 2;
-const int TENNISBALL_NOTFOUND = 3;
 
 char FW = 'W';
 char LFT = 'A';
@@ -182,7 +182,7 @@ int checkPosition(bool haveBall, TennisBall tennisBall)
 		}
 		else
 		{
-			state = TENNISBALL_FORWARD;
+			state = TENNISBALL_FRONT;
 			//SP->WriteData("W",dataLength);
 		}
 		//printf("We see a ball!\n");
@@ -262,10 +262,9 @@ int main(int argc, char* argv[])
 	
 	//printf("Welcome to the serial test app!\n\n");
 
-	Serial* SP = new Serial("\\\\.\\COM10");    // adjust as needed
-	
-	if (SP->IsConnected())
-		printf("We're connected");
+	MovementController mC;
+
+	mC.start("\\\\.\\COM17");
 	
 
 	bool useMorphOps = true;
@@ -339,12 +338,15 @@ int main(int argc, char* argv[])
 		//int readResult = SP->ReadData(incomingData,dataLength);
 		//char * hasQueryRequest = strstr (incomingData, "O");
 
+		mC.sendCommandByVision(state);
+
+		/*
 		int dataLength = 8;
 
 		//if (hasQueryRequest) {
 			switch (state)
 			{
-			case TENNISBALL_FORWARD:
+			case TENNISBALL_FRONT:
 				SP->WriteData("W",dataLength);
 				printf("forward\n");
 				break;
@@ -366,6 +368,7 @@ int main(int argc, char* argv[])
 			}
 			old_state = state;
 		//}
+		*/
 
 		//delay 30ms so that screen can refresh.
 		//image will not appear without this waitKey() command
