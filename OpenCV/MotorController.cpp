@@ -1,19 +1,19 @@
-#include "MovementController.h"
+#include "MotorController.h"
 
 enum { MOVE_FORWARD, MOVE_BACKWARD, POINTTURN_LEFT, POINTTURN_RIGHT, SWINGTURN_LEFT, SWINGTURN_RIGHT, CRUDETURN_LEFT, CRUDETURN_RIGHT, NOTFOUND_PATROL };
 
 enum { TENNISBALL_NOTFOUND, TENNISBALL_FRONT, TENNISBALL_LEFT, TENNISBALL_RIGHT };
 
-MovementController::MovementController(void)
+MotorController::MotorController(void)
 {
 }
 
 
-MovementController::~MovementController(void)
+MotorController::~MotorController(void)
 {
 }
 
-bool MovementController::start(char *portName)
+bool MotorController::start(char *portName)
 {
 	SP = new Serial(portName);    // adjust as needed
 	
@@ -23,7 +23,7 @@ bool MovementController::start(char *portName)
 	return SP->IsConnected();
 }
 
-void MovementController::sendRawCommand (int command)
+void MotorController::sendRawCommand (int command)
 {
 	int dataLength = 8;
 
@@ -71,7 +71,7 @@ void MovementController::sendRawCommand (int command)
 	}
 }
 
-void MovementController::sendCommandByVision (int visionCommand)
+void MotorController::sendCommandByVision (int visionCommand)
 {
 	switch (visionCommand)
 	{

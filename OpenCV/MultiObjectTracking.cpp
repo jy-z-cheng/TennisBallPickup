@@ -22,7 +22,7 @@
 #include <tchar.h>
 #include "TennisBall.h"
 #include "SerialClass.h"
-#include "MovementController.h"
+#include "MotorController.h"
 
 using namespace cv;
 
@@ -262,7 +262,7 @@ int main(int argc, char* argv[])
 	
 	//printf("Welcome to the serial test app!\n\n");
 
-	MovementController mC;
+	MotorController mC;
 
 	mC.start("\\\\.\\COM17");
 	

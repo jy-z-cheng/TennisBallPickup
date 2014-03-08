@@ -2,11 +2,11 @@
 
 #include "SerialClass.h"
 
-class MovementController
+class MotorController
 {
 public:
-	MovementController(void);
-	~MovementController(void);
+	MotorController(void);
+	~MotorController(void);
 
 	bool start(char *portName);
 
