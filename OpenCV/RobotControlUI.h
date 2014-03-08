@@ -447,11 +447,6 @@ namespace TennisBallCollection {
 				button9->Enabled = enable;
 			}
 
-		private: 
-			System::Void button2_Click(System::Object^  sender, System::EventArgs^  e)
-			{
-			 }
-
 		private:
 			System::Void button10_Click(System::Object^  sender, System::EventArgs^  e)
 			{
@@ -490,35 +485,48 @@ namespace TennisBallCollection {
 			}
 		private: 
 			System::Void button1_Click(System::Object^  sender, System::EventArgs^  e)
-				{
-				}
+			{
+				(*mcPointer).sendRawCommand(MotorController::CRUDETURN_LEFT);
+			}
+		private: 
+			System::Void button2_Click(System::Object^  sender, System::EventArgs^  e)
+			{
+				(*mcPointer).sendRawCommand(MotorController::MOVE_FORWARD);
+			}
 		private: 
 			System::Void button3_Click(System::Object^  sender, System::EventArgs^  e)
-				{
-				}
+			{
+				(*mcPointer).sendRawCommand(MotorController::CRUDETURN_RIGHT);
+			}
 		private: 
 			System::Void button4_Click(System::Object^  sender, System::EventArgs^  e)
-				{
-				}
+			{
+				(*mcPointer).sendRawCommand(MotorController::SWINGTURN_LEFT);
+			}
 		private: 
 			System::Void button5_Click(System::Object^  sender, System::EventArgs^  e)
-				{
-				}
+			{
+				(*mcPointer).sendRawCommand(MotorController::STOP);
+			}
 		private: 
 			System::Void button6_Click(System::Object^  sender, System::EventArgs^  e)
-				{
-				}
+			{
+				(*mcPointer).sendRawCommand(MotorController::SWINGTURN_RIGHT);
+			}
 		private: 
 			System::Void button7_Click(System::Object^  sender, System::EventArgs^  e)
-				{
-				}
+			{
+				(*mcPointer).sendRawCommand(MotorController::POINTTURN_LEFT);
+			}
 		private: 
 			System::Void button8_Click(System::Object^  sender, System::EventArgs^  e)
-				{
-				}
+			{
+				(*mcPointer).sendRawCommand(MotorController::MOVE_BACKWARD);
+			}
 		private: 
 			System::Void button9_Click(System::Object^  sender, System::EventArgs^  e)
-				{
-				}
+			{
+				(*mcPointer).sendRawCommand(MotorController::POINTTURN_RIGHT);
+			}
 };
 }
