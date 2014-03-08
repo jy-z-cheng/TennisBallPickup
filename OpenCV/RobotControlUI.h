@@ -19,13 +19,15 @@ namespace TennisBallCollection {
 	{
 		private:
 			MotorController* mcPointer;
+		private:
+			ImageProcessor* ip;
 		public:
-			RobotControlUI(MotorController &mc): mcPointer(&mc)
+			RobotControlUI(MotorController &mc): mcPointer(&mc), ip(&ImageProcessor(*mcPointer))
 			{
 				InitializeComponent();
-				//
-				//TODO: Add the constructor code here
-				//
+
+				(*ip).setEnable(true);
+				(*ip).setCalibrationMode(false);
 			}
 
 		protected:
@@ -284,6 +286,7 @@ namespace TennisBallCollection {
 				// 
 				// button1
 				// 
+				this->button1->Enabled = false;
 				this->button1->Location = System::Drawing::Point(17, 3);
 				this->button1->Name = L"button1";
 				this->button1->Size = System::Drawing::Size(65, 57);
@@ -293,6 +296,7 @@ namespace TennisBallCollection {
 				// 
 				// button2
 				// 
+				this->button2->Enabled = false;
 				this->button2->Location = System::Drawing::Point(102, 3);
 				this->button2->Name = L"button2";
 				this->button2->Size = System::Drawing::Size(65, 57);
@@ -303,6 +307,7 @@ namespace TennisBallCollection {
 				// 
 				// button3
 				// 
+				this->button3->Enabled = false;
 				this->button3->Location = System::Drawing::Point(187, 3);
 				this->button3->Name = L"button3";
 				this->button3->Size = System::Drawing::Size(65, 57);
@@ -312,6 +317,7 @@ namespace TennisBallCollection {
 				// 
 				// button4
 				// 
+				this->button4->Enabled = false;
 				this->button4->Location = System::Drawing::Point(17, 76);
 				this->button4->Name = L"button4";
 				this->button4->Size = System::Drawing::Size(65, 57);
@@ -321,6 +327,7 @@ namespace TennisBallCollection {
 				// 
 				// button5
 				// 
+				this->button5->Enabled = false;
 				this->button5->Location = System::Drawing::Point(102, 76);
 				this->button5->Name = L"button5";
 				this->button5->Size = System::Drawing::Size(65, 57);
@@ -330,6 +337,7 @@ namespace TennisBallCollection {
 				// 
 				// button6
 				// 
+				this->button6->Enabled = false;
 				this->button6->Location = System::Drawing::Point(187, 76);
 				this->button6->Name = L"button6";
 				this->button6->Size = System::Drawing::Size(65, 57);
@@ -339,6 +347,7 @@ namespace TennisBallCollection {
 				// 
 				// button7
 				// 
+				this->button7->Enabled = false;
 				this->button7->Location = System::Drawing::Point(17, 149);
 				this->button7->Name = L"button7";
 				this->button7->Size = System::Drawing::Size(65, 57);
@@ -348,6 +357,7 @@ namespace TennisBallCollection {
 				// 
 				// button8
 				// 
+				this->button8->Enabled = false;
 				this->button8->Location = System::Drawing::Point(102, 149);
 				this->button8->Name = L"button8";
 				this->button8->Size = System::Drawing::Size(65, 57);
@@ -357,6 +367,7 @@ namespace TennisBallCollection {
 				// 
 				// button9
 				// 
+				this->button9->Enabled = false;
 				this->button9->Location = System::Drawing::Point(187, 149);
 				this->button9->Name = L"button9";
 				this->button9->Size = System::Drawing::Size(65, 57);
@@ -395,6 +406,42 @@ namespace TennisBallCollection {
 			}
 			#pragma endregion
 
+		private:
+			void resetModeButtons()
+			{
+				button10->FlatStyle = FlatStyle::Standard;
+				button11->FlatStyle = FlatStyle::Standard;
+				button12->FlatStyle = FlatStyle::Standard;
+			}
+
+		private:
+			void resetManualControlButtons()
+			{
+				button1->FlatStyle = FlatStyle::Standard;
+				button2->FlatStyle = FlatStyle::Standard;
+				button3->FlatStyle = FlatStyle::Standard;
+				button4->FlatStyle = FlatStyle::Standard;
+				button5->FlatStyle = FlatStyle::Standard;
+				button6->FlatStyle = FlatStyle::Standard;
+				button7->FlatStyle = FlatStyle::Standard;
+				button8->FlatStyle = FlatStyle::Standard;
+				button9->FlatStyle = FlatStyle::Standard;
+			}
+
+		private:
+			void enableManualButtons(bool enable)
+			{
+				button1->Enabled = enable;
+				button2->Enabled = enable;
+				button3->Enabled = enable;
+				button4->Enabled = enable;
+				button5->Enabled = enable;
+				button6->Enabled = enable;
+				button7->Enabled = enable;
+				button8->Enabled = enable;
+				button9->Enabled = enable;
+			}
+
 		private: 
 			System::Void button2_Click(System::Object^  sender, System::EventArgs^  e)
 			{
@@ -403,25 +450,37 @@ namespace TennisBallCollection {
 		private:
 			System::Void button10_Click(System::Object^  sender, System::EventArgs^  e)
 			{
+				resetModeButtons();
+				button10->FlatStyle = FlatStyle::Flat;
+				enableManualButtons(true);
+
+				(*ip).setEnable(false);
 			 }
 
 		private:
 			System::Void button11_Click(System::Object^  sender, System::EventArgs^  e)
 			{
-				button10->FlatStyle = FlatStyle::Flat;
+				resetModeButtons();
 				button11->FlatStyle = FlatStyle::Flat;
-
+				enableManualButtons(false);
+				
 				//MotorController motorController;
 				//motorController.start("\\\\.\\COM17");
 
-				ImageProcessor ip(*mcPointer);
-				ip.process();
+				//ImageProcessor ip(*mcPointer);
+				(*ip).setEnable(true);
+				(*ip).process();
 
 			}
 
 		private:
 			System::Void button12_Click(System::Object^  sender, System::EventArgs^  e)
 			{
+				resetModeButtons();
+				button12->FlatStyle = FlatStyle::Flat;
+				enableManualButtons(false);
+
+				(*ip).setEnable(false);
 			}
 };
 }

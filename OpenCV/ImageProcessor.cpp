@@ -67,7 +67,6 @@ const string windowName2 = "Thresholded Image";
 const string windowName3 = "After Morphological Operations";
 const string trackbarWindowName = "Trackbars";
 
-
 ImageProcessor::ImageProcessor(MotorController &mc): motorController(mc)
 {
 }
@@ -259,13 +258,20 @@ void ImageProcessor::trackFilteredObject(Mat threshold,Mat HSV, Mat &cameraFeed)
 	}
 }
 
+void ImageProcessor::setCalibrationMode(bool calibrationMode)
+{
+	ImageProcessor::calibrationMode = calibrationMode;
+}
+
+void ImageProcessor::setEnable(bool enable)
+{
+	ImageProcessor::isEnabled = enable;
+}
+
 void ImageProcessor::process()
 {
 	
 	bool useMorphOps = true;
-
-	//if we would like to calibrate our filter values, set to true.
-	bool calibrationMode = true;
 	
 	//Matrix to store each frame of the webcam feed
 	Mat cameraFeed;
@@ -291,7 +297,7 @@ void ImageProcessor::process()
 		V_MAX_YELLOW = laptopFilter[5];
 	//}
 
-	if(calibrationMode){
+	if(ImageProcessor::calibrationMode==true){
 		//create slider bars for HSV filtering
 		createTrackbars();
 	}
@@ -310,16 +316,16 @@ void ImageProcessor::process()
 		capture.read(cameraFeed);
 		//convert frame from BGR to HSV colorspace
 		cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+		inRange(HSV,Scalar(H_MIN_YELLOW,S_MIN_YELLOW,V_MIN_YELLOW),Scalar(H_MAX_YELLOW,S_MAX_YELLOW,V_MAX_YELLOW),threshold);
+		if(useMorphOps)
+			morphOps(threshold);
 
-		if(calibrationMode==true){
+		if(ImageProcessor::calibrationMode==true){
 			//if in calibration mode, we track objects based on the HSV slider values.
-			cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
-			inRange(HSV,Scalar(H_MIN_YELLOW,S_MIN_YELLOW,V_MIN_YELLOW),Scalar(H_MAX_YELLOW,S_MAX_YELLOW,V_MAX_YELLOW),threshold);
-			if(useMorphOps)
-				morphOps(threshold);
 			imshow(windowName2,threshold);
-			trackFilteredObject(threshold,HSV,cameraFeed);
 		}
+
+		trackFilteredObject(threshold,HSV,cameraFeed);
 
 		//show frames 
 		//imshow(windowName2,threshold);
@@ -327,7 +333,10 @@ void ImageProcessor::process()
 		imshow(windowName,cameraFeed);
 		//imshow(windowName1,HSV);
 
-		motorController.sendCommandByVision(state);
+		if (ImageProcessor::isEnabled)
+		{
+			motorController.sendCommandByVision(state);
+		}
 
 		//delay 30ms so that screen can refresh.
 		//image will not appear without this waitKey() command

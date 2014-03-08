@@ -17,9 +17,13 @@ public:
 	//ImageProcessor(void);
 	~ImageProcessor(void);
 	void process();
+	void setCalibrationMode(bool enable);
+	void setEnable(bool enable);
 
 private:
 	MotorController motorController;
+	bool isEnabled;
+	bool calibrationMode;
 
 	//void on_trackbar( int, void* );
 	string intToString(int number);
