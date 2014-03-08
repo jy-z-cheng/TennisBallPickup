@@ -20,14 +20,14 @@ namespace TennisBallCollection {
 		private:
 			MotorController* mcPointer;
 		private:
-			ImageProcessor* ip;
+			ImageProcessor* ipPointer;
 		public:
-			RobotControlUI(MotorController &mc): mcPointer(&mc), ip(&ImageProcessor(*mcPointer))
+			RobotControlUI(MotorController &mc): mcPointer(&mc), ipPointer(&ImageProcessor(*mcPointer))
 			{
 				InitializeComponent();
 
-				(*ip).setEnable(true);
-				(*ip).setCalibrationMode(false);
+				(*ipPointer).setEnable(true);
+				(*ipPointer).setCalibrationMode(false);
 			}
 
 		protected:
@@ -454,7 +454,7 @@ namespace TennisBallCollection {
 				button10->FlatStyle = FlatStyle::Flat;
 				enableManualButtons(true);
 
-				(*ip).setEnable(false);
+				(*ipPointer).setEnable(false);
 			 }
 
 		private:
@@ -468,8 +468,8 @@ namespace TennisBallCollection {
 				//motorController.start("\\\\.\\COM17");
 
 				//ImageProcessor ip(*mcPointer);
-				(*ip).setEnable(true);
-				(*ip).process();
+				(*ipPointer).setEnable(true);
+				(*ipPointer).process();
 
 			}
 
@@ -480,7 +480,7 @@ namespace TennisBallCollection {
 				button12->FlatStyle = FlatStyle::Flat;
 				enableManualButtons(false);
 
-				(*ip).setEnable(false);
+				(*ipPointer).setEnable(false);
 			}
 };
 }
