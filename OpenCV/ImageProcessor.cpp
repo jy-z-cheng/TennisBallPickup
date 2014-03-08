@@ -67,6 +67,12 @@ const string windowName2 = "Thresholded Image";
 const string windowName3 = "After Morphological Operations";
 const string trackbarWindowName = "Trackbars";
 
+
+ImageProcessor::ImageProcessor(MotorController &mC): motorController(mC)
+{
+}
+
+
 ImageProcessor::ImageProcessor()
 {
 }
@@ -320,7 +326,7 @@ void ImageProcessor::process()
 		imshow(windowName,cameraFeed);
 		//imshow(windowName1,HSV);
 
-		//motorController.sendCommandByVision(state);
+		motorController.sendCommandByVision(state);
 
 		//delay 30ms so that screen can refresh.
 		//image will not appear without this waitKey() command

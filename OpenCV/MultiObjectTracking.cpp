@@ -16,13 +16,12 @@ using namespace cv;
 
 int main(int argc, char* argv[])
 {
-	ImageProcessor ip;
-	ip.process();
-
-	MotorController mC;
-
-	mC.start("\\\\.\\COM17");
 	
+	MotorController mC;
+	mC.start("\\\\.\\COM17");
+
+	ImageProcessor ip(mC);
+	ip.process();
 
 	return 0;
 }

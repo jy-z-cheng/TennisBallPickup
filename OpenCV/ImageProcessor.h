@@ -13,6 +13,7 @@ using namespace cv;
 class ImageProcessor
 {
 public:
+	ImageProcessor(MotorController &mC);
 	ImageProcessor(void);
 	~ImageProcessor(void);
 	void process();
