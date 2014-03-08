@@ -68,14 +68,15 @@ const string windowName3 = "After Morphological Operations";
 const string trackbarWindowName = "Trackbars";
 
 
-ImageProcessor::ImageProcessor(MotorController &mC): motorController(mC)
+ImageProcessor::ImageProcessor(MotorController &mc): motorController(mc)
 {
 }
 
-
+/*
 ImageProcessor::ImageProcessor()
 {
 }
+*/
 
 ImageProcessor::~ImageProcessor()
 {

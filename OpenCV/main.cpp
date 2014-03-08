@@ -20,7 +20,11 @@ using namespace System::Windows::Forms;
 
 int main(int argc, char* argv[])
 {
-    Application::EnableVisualStyles();
+
+	//MotorController motorController;
+	//motorController.start("\\\\.\\COM17");
+	
+	Application::EnableVisualStyles();
     Application::SetCompatibleTextRenderingDefault(false);
 
 	TennisBallCollection::RobotControlUI form;
