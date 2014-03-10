@@ -1,6 +1,8 @@
 #pragma once
 
 #include "SerialClass.h"
+#include <string>
+
 
 class ObstacleDetector
 {
@@ -10,6 +12,7 @@ public:
 
 	bool connect(char *portName, DWORD baudRate);
 
+	void readState();
 
 
 private:
