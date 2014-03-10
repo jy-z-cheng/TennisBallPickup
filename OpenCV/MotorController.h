@@ -8,7 +8,7 @@ public:
 	MotorController(void);
 	~MotorController(void);
 
-	bool start(char *portName);
+	bool connect(char *portName, DWORD baudRate);
 
 	void sendRawCommand (int command);
 

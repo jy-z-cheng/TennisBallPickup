@@ -10,7 +10,6 @@
 #include "SerialClass.h"
 */
 #include "MotorController.h"
-#include "ImageProcessor.h"
 #include "RobotControlUI.h"
 
 using namespace cv;
@@ -22,7 +21,7 @@ int main(int argc, char* argv[])
 {
 
 	MotorController motorController;
-	motorController.start("\\\\.\\COM17");
+	motorController.start("\\\\.\\COM17", CBR_115200);
 	
 	Application::EnableVisualStyles();
     Application::SetCompatibleTextRenderingDefault(false);

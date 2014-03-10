@@ -8,7 +8,7 @@ public:
 	ObstacleDetector(void);
 	~ObstacleDetector(void);
 
-	bool start(char *portName);
+	bool connect(char *portName, DWORD baudRate);
 
 
 

@@ -10,9 +10,9 @@ MotorController::~MotorController(void)
 {
 }
 
-bool MotorController::start(char *portName)
+bool MotorController::connect(char *portName, DWORD baudRate)
 {
-	SP = new Serial(portName);    // adjust as needed
+	SP = new Serial(portName, baudRate);    // adjust as needed
 	
 	if (SP->IsConnected())
 		printf("We're connected");

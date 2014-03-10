@@ -1,6 +1,6 @@
 #include "SerialClass.h"
 
-Serial::Serial(char *portName)
+Serial::Serial(char *portName, DWORD baudRate)
 {
     //We're not yet connected
     this->connected = false;
@@ -43,7 +43,7 @@ Serial::Serial(char *portName)
         else
         {
             //Define serial connection parameters for the arduino board
-            dcbSerialParams.BaudRate=CBR_115200;
+            dcbSerialParams.BaudRate=baudRate;
             dcbSerialParams.ByteSize=8;
             dcbSerialParams.StopBits=ONESTOPBIT;
             dcbSerialParams.Parity=NOPARITY;

@@ -9,9 +9,9 @@ ObstacleDetector::~ObstacleDetector(void)
 {
 }
 
-bool ObstacleDetector::start(char *portName)
+bool ObstacleDetector::connect(char *portName, DWORD baudRate)
 {
-	SP = new Serial(portName);    // adjust as needed
+	SP = new Serial(portName, baudRate);    // adjust as needed
 	
 	//if (SP->IsConnected())
 	//	printf("We're connected");
