@@ -21,12 +21,17 @@ int main(int argc, char* argv[])
 {
 
 	MotorController motorController;
-	motorController.start("\\\\.\\COM17", CBR_115200);
+	motorController.connect("\\\\.\\COM7", CBR_115200);
+
+	ImageProcessor imageProcessor(motorController);
+
+	//motorController.setUltraSonicSensor("\\\\.\\COM17", CBR_9600);
+	//motorController.initializeUltraSonicSensor();
 	
 	Application::EnableVisualStyles();
     Application::SetCompatibleTextRenderingDefault(false);
 
-	TennisBallCollection::RobotControlUI form(motorController);
+	TennisBallCollection::RobotControlUI form(motorController, imageProcessor);
     Application::Run(%form);
 
 	/*

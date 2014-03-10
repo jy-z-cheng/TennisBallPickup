@@ -22,7 +22,7 @@ namespace TennisBallCollection {
 		private:
 			ImageProcessor* ipPointer;
 		public:
-			RobotControlUI(MotorController &mc): mcPointer(&mc), ipPointer(&ImageProcessor(*mcPointer))
+			RobotControlUI(MotorController &mc, ImageProcessor &ip): mcPointer(&mc), ipPointer(&ip)
 			{
 				InitializeComponent();
 			}
@@ -468,7 +468,7 @@ namespace TennisBallCollection {
 				//motorController.start("\\\\.\\COM17");
 
 				//ImageProcessor ip(*mcPointer);
-				(*ipPointer).setCalibrationMode(false);
+				(*ipPointer).setCalibrationMode(true);
 				(*ipPointer).setEnable(true);
 				(*ipPointer).process();
 
