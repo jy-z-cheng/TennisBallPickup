@@ -486,46 +486,64 @@ namespace TennisBallCollection {
 		private: 
 			System::Void button1_Click(System::Object^  sender, System::EventArgs^  e)
 			{
+				resetManualControlButtons();
+				button1->FlatStyle = FlatStyle::Flat;
 				(*mcPointer).sendRawCommand(MotorController::CRUDETURN_LEFT);
 			}
 		private: 
 			System::Void button2_Click(System::Object^  sender, System::EventArgs^  e)
 			{
+				resetManualControlButtons();
+				button2->FlatStyle = FlatStyle::Flat;
 				(*mcPointer).sendRawCommand(MotorController::MOVE_FORWARD);
 			}
 		private: 
 			System::Void button3_Click(System::Object^  sender, System::EventArgs^  e)
 			{
+				resetManualControlButtons();
+				button3->FlatStyle = FlatStyle::Flat;
 				(*mcPointer).sendRawCommand(MotorController::CRUDETURN_RIGHT);
 			}
 		private: 
 			System::Void button4_Click(System::Object^  sender, System::EventArgs^  e)
 			{
+				resetManualControlButtons();
+				button4->FlatStyle = FlatStyle::Flat;
 				(*mcPointer).sendRawCommand(MotorController::SWINGTURN_LEFT);
 			}
 		private: 
 			System::Void button5_Click(System::Object^  sender, System::EventArgs^  e)
 			{
+				resetManualControlButtons();
+				button5->FlatStyle = FlatStyle::Flat;
 				(*mcPointer).sendRawCommand(MotorController::STOP);
 			}
 		private: 
 			System::Void button6_Click(System::Object^  sender, System::EventArgs^  e)
 			{
+				resetManualControlButtons();
+				button6->FlatStyle = FlatStyle::Flat;
 				(*mcPointer).sendRawCommand(MotorController::SWINGTURN_RIGHT);
 			}
 		private: 
 			System::Void button7_Click(System::Object^  sender, System::EventArgs^  e)
 			{
+				resetManualControlButtons();
+				button7->FlatStyle = FlatStyle::Flat;
 				(*mcPointer).sendRawCommand(MotorController::POINTTURN_LEFT);
 			}
 		private: 
 			System::Void button8_Click(System::Object^  sender, System::EventArgs^  e)
 			{
+				resetManualControlButtons();
+				button8->FlatStyle = FlatStyle::Flat;
 				(*mcPointer).sendRawCommand(MotorController::MOVE_BACKWARD);
 			}
 		private: 
 			System::Void button9_Click(System::Object^  sender, System::EventArgs^  e)
 			{
+				resetManualControlButtons();
+				button9->FlatStyle = FlatStyle::Flat;
 				(*mcPointer).sendRawCommand(MotorController::POINTTURN_RIGHT);
 			}
 };
