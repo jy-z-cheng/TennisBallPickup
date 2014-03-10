@@ -31,12 +31,20 @@ digitalWrite(2, HIGH);
   inches = microsecondsToInches(duration);
   cm = microsecondsToCentimeters(duration);
  
+  /*
   Serial.print(inches);
   Serial.print("in, ");
   Serial.print(cm);
   Serial.print("cm");
   Serial.println();
- 
+  */
+  
+  if (cm < 10) {
+    Serial.print("F");
+  } else {
+    Serial.print("N");
+  }
+  
   delay(100);
 }
 
