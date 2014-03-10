@@ -11,6 +11,7 @@ int forward = 2;
 int left = 3;
 int right = 4;
 int stay = 5;
+int back = 6;
 
 int incomingByte;    // a variable to read incoming serial data into
 
@@ -62,7 +63,8 @@ void reset() {
   digitalWrite(forward, LOW); 
   digitalWrite(left, LOW); 
   digitalWrite(right, LOW); 
-  digitalWrite(stay, LOW); 
+  digitalWrite(stay, LOW);
+  digitalWrite(back, LOW);
 }
 
 // the loop routine runs over and over again forever:
@@ -75,22 +77,28 @@ void loop() {
     command = -1;
         break;
     case 1: //W
+      digitalWrite(left, LOW); 
+      digitalWrite(right, LOW); 
+      digitalWrite(stay, LOW); 
+      digitalWrite(forward, HIGH);
+      digitalWrite(back, LOW); 
+      command = 0;
+      break;
+    case 2: //X
   digitalWrite(left, LOW); 
   digitalWrite(right, LOW); 
   digitalWrite(stay, LOW); 
-    digitalWrite(forward, HIGH); 
-    command = 0;
-        break;
-    case 2: //X
-
+  digitalWrite(forward, LOW);
+  digitalWrite(back, HIGH);  
     command = 0;
         break;
     case 3: //S
-  digitalWrite(left, LOW); 
-  digitalWrite(right, LOW); 
-  digitalWrite(forward, LOW); 
-    digitalWrite(stay, HIGH);
-    command = 0;
+      digitalWrite(left, LOW); 
+      digitalWrite(right, LOW); 
+      digitalWrite(forward, LOW); 
+      digitalWrite(stay, HIGH);
+      digitalWrite(back, LOW); 
+      command = 0;
         break;
     case 4: //Q
 
@@ -100,10 +108,11 @@ void loop() {
     command = 0;
         break;
     case 6:  //A
-  digitalWrite(left, LOW); 
+  digitalWrite(right, LOW); 
   digitalWrite(forward, LOW); 
   digitalWrite(stay, LOW); 
-    digitalWrite(left, HIGH); 
+    digitalWrite(left, HIGH);
+    digitalWrite(back, LOW); 
     command = 0;
         break;
     case 7:  //D
@@ -111,6 +120,7 @@ void loop() {
   digitalWrite(forward, LOW); 
   digitalWrite(stay, LOW); 
     digitalWrite(right, HIGH);
+    digitalWrite(back, LOW); 
     command = 0;
         break;
     case 8: //Z
