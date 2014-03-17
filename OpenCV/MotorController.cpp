@@ -12,12 +12,12 @@ MotorController::~MotorController(void)
 
 bool MotorController::connect(char *portName, DWORD baudRate)
 {
-	MotorController::SP = new Serial(portName, baudRate);
+	SP = new Serial(portName, baudRate);
 
-	if (MotorController::SP->IsConnected())
+	if (SP->IsConnected())
 		printf("Robot connected.\n");
 
-	return MotorController::SP->IsConnected();
+	return SP->IsConnected();
 }
 
 void MotorController::setUltraSonicSensor(char *portName, DWORD baudRate)
@@ -37,48 +37,48 @@ void MotorController::sendRawCommand (int command)
 {
 	int dataLength = 8;
 
-	if(MotorController::SP->IsConnected())
+	if(SP->IsConnected())
 	{
 		switch (command)
 		{
 		case MotorController::STOP:
-			MotorController::SP->WriteData("S",dataLength);
+			SP->WriteData("S",dataLength);
 			printf("stop\n");
 			break;
 		case MotorController::MOVE_FORWARD:
-			MotorController::SP->WriteData("W",dataLength);
+			SP->WriteData("W",dataLength);
 			printf("move forward\n");
 			break;
 		case MotorController::MOVE_BACKWARD:
-			MotorController::SP->WriteData("X",dataLength);
+			SP->WriteData("X",dataLength);
 			printf("move backward\n");
 			break;
 		case MotorController::POINTTURN_LEFT:
-			MotorController::SP->WriteData("Z",dataLength);
+			SP->WriteData("Z",dataLength);
 			printf("point turn left\n");
 			break;
 		case MotorController::POINTTURN_RIGHT:
-			MotorController::SP->WriteData("C",dataLength);
+			SP->WriteData("C",dataLength);
 			printf("point turn right\n");
 			break;
 		case MotorController::SWINGTURN_LEFT:
-			MotorController::SP->WriteData("A",dataLength);
+			SP->WriteData("A",dataLength);
 			printf("swing turn left\n");
 			break;
 		case MotorController::SWINGTURN_RIGHT:
-			MotorController::SP->WriteData("D",dataLength);
+			SP->WriteData("D",dataLength);
 			printf("swing turn right\n");
 			break;
 		case MotorController::CRUDETURN_LEFT:
-			MotorController::SP->WriteData("Q",dataLength);
+			SP->WriteData("Q",dataLength);
 			printf("crude turn left\n");
 			break;
 		case MotorController::CRUDETURN_RIGHT:
-			MotorController::SP->WriteData("E",dataLength);
+			SP->WriteData("E",dataLength);
 			printf("crude turn right\n");
 			break;
 		case MotorController::NOTFOUND_PATROL:
-			MotorController::SP->WriteData("L",dataLength);
+			SP->WriteData("L",dataLength);
 			printf("notfound\n");
 			break;
 		default:

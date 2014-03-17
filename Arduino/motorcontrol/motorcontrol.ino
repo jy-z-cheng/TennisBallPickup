@@ -7,7 +7,12 @@ int incomingByte;    // a variable to read incoming serial data into
 
 int command;
 
-int tangentialSpeed = 300;
+int DESIREDSPEED = 300;
+
+int currentSpeed;
+
+int pastCommand;
+int sameCommandCount;
 
 void setup()
 {
@@ -17,28 +22,39 @@ void setup()
 
 void serialEvent()
 {
+  currentSpeed = DESIREDSPEED;
+  
+  if (command != pastCommand) {
+    if (sameCommandCount > 3) {
+      currentSpeed = 400;
+    }
+    sameCommandCount = 0
+  } else {
+    sameCommandCount ++;
+  }
+  
   // see if there's incoming serial data:
   if (Serial.available() > 0) {
     // read the oldest byte in the serial buffer:
     incomingByte = Serial.read();
     if (incomingByte == 'W') {
-      arduinoMotorController._move(tangentialSpeed);
+      arduinoMotorController._move(currentSpeed);
     } else if (incomingByte == 'X') {
-      arduinoMotorController._move(-tangentialSpeed);
+      arduinoMotorController._move(-currentSpeed);
     } else if (incomingByte == 'S') {
       arduinoMotorController._move(0);
     } else if (incomingByte == 'Q') {
-      arduinoMotorController._swingTurn(tangentialSpeed/2, tangentialSpeed);
+      arduinoMotorController._swingTurn(currentSpeed/2, currentSpeed);
     } else if (incomingByte == 'E') {
-      arduinoMotorController._swingTurn(tangentialSpeed, tangentialSpeed/2);
+      arduinoMotorController._swingTurn(currentSpeed, currentSpeed/2);
     } else if (incomingByte == 'A') {
-      arduinoMotorController._pointTurn(tangentialSpeed/2);
+      arduinoMotorController._pointTurn(currentSpeed/2);
     } else if (incomingByte == 'D') {
-      arduinoMotorController._pointTurn(-tangentialSpeed/2);
+      arduinoMotorController._pointTurn(-currentSpeed/2);
     } else if (incomingByte == 'Z') {
-      arduinoMotorController._crudeTurn(tangentialSpeed);
+      arduinoMotorController._crudeTurn(currentSpeed);
     } else if (incomingByte == 'C') {
-      arduinoMotorController._crudeTurn(-tangentialSpeed);
+      arduinoMotorController._crudeTurn(-currentSpeed);
     } else if (incomingByte == 'L') {
       arduinoMotorController._crudeTurn(250);
     } else {
@@ -46,6 +62,8 @@ void serialEvent()
       command = 0;
     }
   }
+  
+  pastCommand = command;
 }
 
 
