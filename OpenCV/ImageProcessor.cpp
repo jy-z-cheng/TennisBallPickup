@@ -24,7 +24,8 @@ const int WEBCAM = 1;
 //const int webcamFilter[6] = {26, 40, 0, 256, 242, 256};
 
 // fish bowel - laptop
-const int laptopFilter[6] = {28, 77, 75, 256, 74, 256};
+const int laptopFilter[6] = { 18, 42, 30, 100, 116, 256 };
+	// {28, 77, 75, 256, 74, 256};
 // default {26, 77,47,256,74,256};
 //{47, 77, 18, 256, 235, 256};
 

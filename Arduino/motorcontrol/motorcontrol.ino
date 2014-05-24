@@ -7,7 +7,7 @@ int incomingByte;    // a variable to read incoming serial data into
 
 int command;
 
-int DESIREDSPEED = 300;
+int DESIREDSPEED = 340;
 
 int currentSpeed;
 
@@ -28,7 +28,7 @@ void serialEvent()
     if (sameCommandCount > 3) {
       currentSpeed = 400;
     }
-    sameCommandCount = 0
+    sameCommandCount = 0;
   } else {
     sameCommandCount ++;
   }
@@ -56,7 +56,7 @@ void serialEvent()
     } else if (incomingByte == 'C') {
       arduinoMotorController._crudeTurn(-currentSpeed);
     } else if (incomingByte == 'L') {
-      arduinoMotorController._crudeTurn(250);
+      arduinoMotorController._crudeTurn(290);
     } else {
       //arduinoMotorController._move(0);
       command = 0;
