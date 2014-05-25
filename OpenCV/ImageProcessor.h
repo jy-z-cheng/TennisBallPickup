@@ -19,12 +19,15 @@ public:
 	void process();
 	void setCalibrationMode(bool enable);
 	void setEnable(bool enable);
+	void setNavigationMode(int nmode);
 	enum TennisBallLocation { TENNISBALL_NOTFOUND, TENNISBALL_FRONT, TENNISBALL_LEFT, TENNISBALL_RIGHT };
+	enum NavigationMode { MODE_LOCAL, MODE_GLOBAL};
 
 private:
 	MotorController motorController;
 	bool isEnabled;
 	bool calibrationMode;
+	int navMode;
 
 	//void on_trackbar( int, void* );
 	string intToString(int number);

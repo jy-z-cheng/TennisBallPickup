@@ -18,7 +18,7 @@
 
 #define PI 3.14159265
 
-enum { MOVE_FORWARD, MOVE_BACKWARD, POINTTURN_LEFT, POINTTURN_RIGHT, SWINGTURN_LEFT, SWINGTURN_RIGHT, CRUDETURN_LEFT, CRUDETURN_RIGHT };
+//enum { MOVE_FORWARD, MOVE_BACKWARD, POINTTURN_LEFT, POINTTURN_RIGHT, SWINGTURN_LEFT, SWINGTURN_RIGHT, CRUDETURN_LEFT, CRUDETURN_RIGHT };
 
 // fish bowel - laptop
 //const int laptopFilter[6] = { 18, 42, 30, 100, 116, 256 };
@@ -318,6 +318,11 @@ void ImageProcessor::trackRobotState(Mat threshold1, Mat threshold2, Mat HSV, Ma
 
 }
 
+void ImageProcessor::setNavigationMode(int nmode)
+{
+	ImageProcessor::navMode = nmode;
+}
+
 void ImageProcessor::setCalibrationMode(bool calibrationMode)
 {
 	ImageProcessor::calibrationMode = calibrationMode;
@@ -330,6 +335,22 @@ void ImageProcessor::setEnable(bool enable)
 
 void ImageProcessor::process()
 {
+	switch(navMode)
+	{
+		case ImageProcessor::MODE_LOCAL:
+			setCalibrationMode(false);
+			setEnable(true);
+			break;
+		case ImageProcessor::MODE_GLOBAL:
+			setCalibrationMode(false);
+			setEnable(true);
+			break;
+		default:
+			setCalibrationMode(true);
+			setEnable(false);
+			break;
+	}
+
 	
 	bool useMorphOps = true;
 	
@@ -367,7 +388,7 @@ void ImageProcessor::process()
 			cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
 
 
-			inRange(HSV,tennisBall.getHSVMin(),tennisBall.getHSVMax(),threshold);
+			inRange(HSV,Scalar(H_MIN,S_MIN,V_MIN),Scalar(H_MAX,S_MAX,V_MAX),threshold);
 			if(useMorphOps)
 				morphOps(threshold);
 
@@ -376,28 +397,38 @@ void ImageProcessor::process()
 			trackFilteredObject(threshold,HSV,cameraFeed);
 		} else {
 
-			Marker robotFront, robotBack;
+			if (navMode == ImageProcessor::MODE_LOCAL) {
+				cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+				inRange(HSV,tennisBall.getHSVMin(),tennisBall.getHSVMax(),threshold);
+				morphOps(threshold);
+				trackFilteredObject(threshold,HSV,cameraFeed);
 
-			robotFront.setHSVMin(Scalar(42,65,0));
-			robotFront.setHSVMax(Scalar(77,132,256));
+			} else if (navMode == ImageProcessor::MODE_GLOBAL) {
 
-			robotBack.setHSVMin(Scalar(67,170,0));
-			robotBack.setHSVMax(Scalar(107,210,256));
+				Marker robotFront, robotBack;
+
+				robotFront.setHSVMin(Scalar(42,65,0));
+				robotFront.setHSVMax(Scalar(77,132,256));
+
+				robotBack.setHSVMin(Scalar(67,170,0));
+				robotBack.setHSVMax(Scalar(107,210,256));
 			
-			cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
-			inRange(HSV,robotFront.getHSVMin(),robotFront.getHSVMax(),threshold_rf);
-			morphOps(threshold_rf);
+				cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+				inRange(HSV,robotFront.getHSVMin(),robotFront.getHSVMax(),threshold_rf);
+				morphOps(threshold_rf);
 
-			cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
-			inRange(HSV,robotBack.getHSVMin(),robotBack.getHSVMax(),threshold_rb);
-			morphOps(threshold_rb);
+				cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+				inRange(HSV,robotBack.getHSVMin(),robotBack.getHSVMax(),threshold_rb);
+				morphOps(threshold_rb);
 			
-			trackRobotState(threshold_rf, threshold_rb, HSV, cameraFeed);
+				trackRobotState(threshold_rf, threshold_rb, HSV, cameraFeed);
 
-			//cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
-			//inRange(HSV,tennisBall.getHSVMin(),tennisBall.getHSVMax(),threshold);
-			//morphOps(threshold);
-			//trackFilteredObject(threshold,HSV,cameraFeed);
+				//cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+				//inRange(HSV,tennisBall.getHSVMin(),tennisBall.getHSVMax(),threshold);
+				//morphOps(threshold);
+				//trackFilteredObject(threshold,HSV,cameraFeed);
+
+			}
 		}
 
 		//show frames 

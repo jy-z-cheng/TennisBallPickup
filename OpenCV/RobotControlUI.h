@@ -201,7 +201,7 @@ namespace TennisBallCollection {
 				this->button11->Name = L"button11";
 				this->button11->Size = System::Drawing::Size(65, 57);
 				this->button11->TabIndex = 1;
-				this->button11->Text = L"Roomba";
+				this->button11->Text = L"Local";
 				this->button11->UseVisualStyleBackColor = true;
 				this->button11->Click += gcnew System::EventHandler(this, &RobotControlUI::button11_Click);
 				// 
@@ -211,7 +211,7 @@ namespace TennisBallCollection {
 				this->button12->Name = L"button12";
 				this->button12->Size = System::Drawing::Size(65, 57);
 				this->button12->TabIndex = 2;
-				this->button12->Text = L"Intelligent";
+				this->button12->Text = L"Global";
 				this->button12->UseVisualStyleBackColor = true;
 				this->button12->Click += gcnew System::EventHandler(this, &RobotControlUI::button12_Click);
 				// 
@@ -468,8 +468,7 @@ namespace TennisBallCollection {
 				//motorController.start("\\\\.\\COM17");
 
 				//ImageProcessor ip(*mcPointer);
-				(*ipPointer).setCalibrationMode(true);
-				(*ipPointer).setEnable(true);
+				(*ipPointer).setNavigationMode(ImageProcessor::MODE_LOCAL);
 				(*ipPointer).process();
 
 			}
@@ -481,8 +480,7 @@ namespace TennisBallCollection {
 				button12->FlatStyle = FlatStyle::Flat;
 				enableManualButtons(false);
 
-				(*ipPointer).setCalibrationMode(false);
-				(*ipPointer).setEnable(true);
+				(*ipPointer).setNavigationMode(ImageProcessor::MODE_GLOBAL);
 				(*ipPointer).process();
 			}
 		private: 
