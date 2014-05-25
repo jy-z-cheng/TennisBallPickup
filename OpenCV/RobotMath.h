@@ -1,18 +1,21 @@
 #pragma once
 
+#include <string>
+
+using namespace std;
 
 namespace RobotMath
 {
-   void findSlopeOfLine();
-   void function2();
-   void function3();
+	class Point;
 
-   template<typename T>
-   void function4()
-   {
-      //function template definition should be here!
-   }
+	void findSlopeOfLine(Point pt1, Point pt2);
+	void function2();
+	void function3();
 
-   class Point;
+	template<typename T>
+	void function4()
+	{
+		//function template definition should be here!
+	}
 
 }
