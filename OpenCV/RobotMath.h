@@ -12,5 +12,7 @@ namespace RobotMath
    {
       //function template definition should be here!
    }
-}
 
+   class Point;
+
+}
