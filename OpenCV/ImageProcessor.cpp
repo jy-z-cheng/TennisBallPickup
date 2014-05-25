@@ -353,8 +353,13 @@ void ImageProcessor::process()
 	//all of our operations will be performed within this loop
 	while(1)
 	{
+
 		//store image to matrix
 		capture.read(cameraFeed);
+		
+		Marker tennisBall;
+		tennisBall.setHSVMin(Scalar(39,40,0));
+		tennisBall.setHSVMax(Scalar(56,256,256));
 
 		if (ImageProcessor::calibrationMode==true)
 		{
@@ -362,7 +367,7 @@ void ImageProcessor::process()
 			cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
 
 
-			inRange(HSV,Scalar(H_MIN,S_MIN,V_MIN),Scalar(H_MAX,S_MAX,V_MAX),threshold);
+			inRange(HSV,tennisBall.getHSVMin(),tennisBall.getHSVMax(),threshold);
 			if(useMorphOps)
 				morphOps(threshold);
 
@@ -371,19 +376,13 @@ void ImageProcessor::process()
 			trackFilteredObject(threshold,HSV,cameraFeed);
 		} else {
 
-			Marker tennisBall, robotFront, robotBack;
+			Marker robotFront, robotBack;
 
 			robotFront.setHSVMin(Scalar(42,65,0));
 			robotFront.setHSVMax(Scalar(77,132,256));
 
 			robotBack.setHSVMin(Scalar(67,170,0));
 			robotBack.setHSVMax(Scalar(107,210,256));
-
-
-			//cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
-			//inRange(HSV,tennisBall.getHSVMin(),tennisBall.getHSVMax(),threshold);
-			//morphOps(threshold);
-			//trackFilteredObject(threshold,HSV,cameraFeed);
 			
 			cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
 			inRange(HSV,robotFront.getHSVMin(),robotFront.getHSVMax(),threshold_rf);
@@ -395,6 +394,10 @@ void ImageProcessor::process()
 			
 			trackRobotState(threshold_rf, threshold_rb, HSV, cameraFeed);
 
+			//cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+			//inRange(HSV,tennisBall.getHSVMin(),tennisBall.getHSVMax(),threshold);
+			//morphOps(threshold);
+			//trackFilteredObject(threshold,HSV,cameraFeed);
 		}
 
 		//show frames 
