@@ -2,11 +2,16 @@
 
 #include <string>
 #include <vector>
-#include "Marker.h"
+#include <math.h>
+
 #include <opencv\highgui.h>
 #include <opencv\cv.h>
-#include "MotorController.h";
 
+#include "MotorController.h"
+#include "Marker.h"
+#include "Robot.h"
+
+using namespace cv;
 using namespace std;
 
 class ImageProcessor
