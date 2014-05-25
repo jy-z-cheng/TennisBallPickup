@@ -10,26 +10,6 @@ Marker::~Marker(void)
 {
 }
 
-int Marker::getXPosition()
-{
-	return Marker::xPos;
-}
-
-void Marker::setXPosition(int x)
-{
-	Marker::xPos = x;
-}
-
-int Marker::getYPosition()
-{
-	return Marker::yPos;
-}
-
-void Marker::setYPosition(int y)
-{
-	Marker::yPos = y;
-}
-
 Scalar Marker::getHSVMin()
 {
 	return Marker::hsvMin;

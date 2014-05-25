@@ -4,20 +4,16 @@
 #include <opencv\highgui.h>
 #include <opencv\cv.h>
 
-using namespace std;
+#include "RobotMath.h"
+#include "PointRM.h"
+
 using namespace cv;
 
-class Marker
+class Marker: public RobotMath::Point
 {
 public:
 	Marker(void);
 	~Marker(void);
-
-	int getXPosition();
-	void setXPosition(int x);
-
-	int getYPosition();
-	void setYPosition(int y);
 
 	Scalar getHSVMin();
 	void setHSVMin(Scalar ihsvMin);
@@ -30,7 +26,6 @@ public:
 
 private:
 	bool valid;
-	int xPos, yPos;
 	Scalar hsvMax, hsvMin;
 	
 };

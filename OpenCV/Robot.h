@@ -4,20 +4,16 @@
 #include <opencv\highgui.h>
 #include <opencv\cv.h>
 
-using namespace std;
+#include "RobotMath.h"
+#include "PointRM.h"
+
 using namespace cv;
 
-class Robot
+class Robot: public RobotMath::Point
 {
 public:
 	Robot(void);
 	~Robot(void);
-
-	double getXPosition();
-	void setXPosition(double x);
-
-	double getYPosition();
-	void setYPosition(double y);
 
 	double getAbsoluteHeading();
 	void setAbsoluteHeading(double h);
