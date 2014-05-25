@@ -8,7 +8,6 @@
 #include "MotorController.h";
 
 using namespace std;
-using namespace cv;
 
 class ImageProcessor
 {
