@@ -13,8 +13,10 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //IN THE SOFTWARE.
 
+#include <math.h>
+
 #include "ImageProcessor.h"
-#include <math.h>  
+#include "Robot.h"
 
 #define PI 3.14159265
 
@@ -306,16 +308,24 @@ void ImageProcessor::trackRobotState(Mat threshold1, Mat threshold2, Mat HSV, Ma
 	double x_diff = robotFrontMarker.getXPosition()-robotBackMarker.getXPosition();
 	double y_diff = robotFrontMarker.getYPosition()-robotBackMarker.getYPosition();
 
-	double robot_heading = atan2 (y_diff,x_diff);
-	double robot_heading_deg = -(robot_heading * 180 / PI);
+	double robot_heading = -atan2 (y_diff,x_diff);
 
-	if (robot_heading_deg < 0)
+	if (robot_heading < 0)
 	{
-		robot_heading_deg = 2*180 + robot_heading_deg;
+		robot_heading = 2*PI + robot_heading;
 	}
 
-	putText(cameraFeed, to_string(robot_heading_deg) + " degrees",Point(0,50),1,2,Scalar(0,0,255),2);
+	double robot_heading_deg = (robot_heading * 180 / PI);
 
+	Robot theRobot;
+
+	theRobot.setXPosition(robotBackMarker.getXPosition());
+	theRobot.setYPosition(robotBackMarker.getYPosition());
+	theRobot.setAbsoluteHeading(robot_heading);
+
+
+	putText(cameraFeed, "(" + to_string(theRobot.getXPosition()) + "," + to_string(theRobot.getYPosition()) + "," 
+		+ to_string(robot_heading_deg) + " degrees",Point(0,50),1,2,Scalar(0,0,255),2);
 }
 
 void ImageProcessor::setNavigationMode(int nmode)
@@ -420,6 +430,7 @@ void ImageProcessor::process()
 				cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
 				inRange(HSV,robotBack.getHSVMin(),robotBack.getHSVMax(),threshold_rb);
 				morphOps(threshold_rb);
+				imshow(windowName2,threshold_rb);
 			
 				trackRobotState(threshold_rf, threshold_rb, HSV, cameraFeed);
 
