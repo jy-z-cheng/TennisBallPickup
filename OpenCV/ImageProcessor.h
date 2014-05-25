@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "TennisBall.h"
+#include "Marker.h"
 #include <opencv\highgui.h>
 #include <opencv\cv.h>
 #include "MotorController.h";
@@ -29,9 +29,10 @@ private:
 	//void on_trackbar( int, void* );
 	string intToString(int number);
 	void createTrackbars();
-	void drawObject(vector<TennisBall> theTennisBalls,Mat &frame);
+	void drawObject(vector<Marker> theTennisBalls,Mat &frame);
 	void morphOps(Mat &thresh);
-	int checkPosition(bool haveBall, TennisBall tennisBall);
+	int checkPosition(bool haveBall, Marker tennisBall);
 	void trackFilteredObject(Mat threshold,Mat HSV, Mat &cameraFeed);
-
+	Marker trackRobotMarker(Mat threshold, Mat HSV, Mat &cameraFeed);
+	void trackRobotState(Mat threshold1, Mat threshold2, Mat HSV, Mat &cameraFeed);
 };

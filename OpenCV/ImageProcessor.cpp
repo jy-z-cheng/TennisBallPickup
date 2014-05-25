@@ -14,17 +14,14 @@
 //IN THE SOFTWARE.
 
 #include "ImageProcessor.h"
+#include <math.h>  
+
+#define PI 3.14159265
 
 enum { MOVE_FORWARD, MOVE_BACKWARD, POINTTURN_LEFT, POINTTURN_RIGHT, SWINGTURN_LEFT, SWINGTURN_RIGHT, CRUDETURN_LEFT, CRUDETURN_RIGHT };
 
-const int LAPTOP = 0;
-const int WEBCAM = 1;
-
-//const int laptopFilter[6] = {31, 47, 53, 177, 103, 256};
-//const int webcamFilter[6] = {26, 40, 0, 256, 242, 256};
-
 // fish bowel - laptop
-const int laptopFilter[6] = { 18, 42, 30, 100, 116, 256 };
+//const int laptopFilter[6] = { 18, 42, 30, 100, 116, 256 };
 	// {28, 77, 75, 256, 74, 256};
 // default {26, 77,47,256,74,256};
 //{47, 77, 18, 256, 235, 256};
@@ -33,15 +30,6 @@ const int laptopFilter[6] = { 18, 42, 30, 100, 116, 256 };
 //const int laptopFilter[6] = {14, 53, 32, 256, 0, 256};
 
 int state = ImageProcessor::TENNISBALL_NOTFOUND;
-
-int cameraInUse = LAPTOP;
-
-int H_MIN_YELLOW = 0;
-int H_MAX_YELLOW = 256;
-int S_MIN_YELLOW = 0;
-int S_MAX_YELLOW = 256;
-int V_MIN_YELLOW = 0;
-int V_MAX_YELLOW = 256;
 
 //initial min and max HSV filter values.
 //these will be changed using trackbars
@@ -52,8 +40,8 @@ int S_MAX = 256;
 int V_MIN = 0;
 int V_MAX = 256;
 //default capture width and height
-const int FRAME_WIDTH = 640;
-const int FRAME_HEIGHT = 480;
+const int FRAME_WIDTH = 1280;
+const int FRAME_HEIGHT = 720;
 //max number of objects to be detected in frame
 const int MAX_NUM_OBJECTS=50;
 //minimum and maximum object area
@@ -65,6 +53,8 @@ const string windowName1 = "HSV Image";
 const string windowName2 = "Thresholded Image";
 const string windowName3 = "After Morphological Operations";
 const string trackbarWindowName = "Trackbars";
+
+
 
 ImageProcessor::ImageProcessor(MotorController &mc): motorController(mc)
 {
@@ -117,16 +107,16 @@ void ImageProcessor::createTrackbars(){
 	//the max value the trackbar can move (eg. H_HIGH), 
 	//and the function that is called whenever the trackbar is moved(eg. on_trackbar)
 	//                                  ---->    ---->     ---->      
-	createTrackbar( "H_MIN", trackbarWindowName, &H_MIN_YELLOW, H_MAX, on_trackbar );
-	createTrackbar( "H_MAX", trackbarWindowName, &H_MAX_YELLOW, H_MAX, on_trackbar );
-	createTrackbar( "S_MIN", trackbarWindowName, &S_MIN_YELLOW, S_MAX, on_trackbar );
-	createTrackbar( "S_MAX", trackbarWindowName, &S_MAX_YELLOW, S_MAX, on_trackbar );
-	createTrackbar( "V_MIN", trackbarWindowName, &V_MIN_YELLOW, V_MAX, on_trackbar );
-	createTrackbar( "V_MAX", trackbarWindowName, &V_MAX_YELLOW, V_MAX, on_trackbar );
+	createTrackbar( "H_MIN", trackbarWindowName, &H_MIN, H_MAX, on_trackbar );
+	createTrackbar( "H_MAX", trackbarWindowName, &H_MAX, H_MAX, on_trackbar );
+	createTrackbar( "S_MIN", trackbarWindowName, &S_MIN, S_MAX, on_trackbar );
+	createTrackbar( "S_MAX", trackbarWindowName, &S_MAX, S_MAX, on_trackbar );
+	createTrackbar( "V_MIN", trackbarWindowName, &V_MIN, V_MAX, on_trackbar );
+	createTrackbar( "V_MAX", trackbarWindowName, &V_MAX, V_MAX, on_trackbar );
 
 
 }
-void ImageProcessor::drawObject(vector<TennisBall> theTennisBalls,Mat &frame){
+void ImageProcessor::drawObject(vector<Marker> theTennisBalls,Mat &frame){
 
 	for (int i = 0; i < theTennisBalls.size(); i++) {
 		cv::circle(frame,cv::Point(theTennisBalls.at(i).getXPosition(),theTennisBalls.at(i).getYPosition()),20,cv::Scalar(0,0,255));
@@ -155,7 +145,7 @@ void ImageProcessor::morphOps(Mat &thresh){
 }
 
 // application reads from the specified serial port and reports the collected data
-int ImageProcessor::checkPosition(bool haveBall, TennisBall tennisBall)
+int ImageProcessor::checkPosition(bool haveBall, Marker tennisBall)
 {
 	int x = tennisBall.getXPosition();
 	int y = tennisBall.getYPosition();
@@ -199,7 +189,7 @@ int ImageProcessor::checkPosition(bool haveBall, TennisBall tennisBall)
 
 void ImageProcessor::trackFilteredObject(Mat threshold,Mat HSV, Mat &cameraFeed){
 
-	vector<TennisBall> tennisBalls;
+	vector<Marker> tennisBalls;
 
 	Mat temp;
 	threshold.copyTo(temp);
@@ -226,7 +216,7 @@ void ImageProcessor::trackFilteredObject(Mat threshold,Mat HSV, Mat &cameraFeed)
 				//iteration and compare it to the area in the next iteration.
 				if(area>MIN_OBJECT_AREA){
 
-					TennisBall tennisBall;
+					Marker tennisBall;
 
 					tennisBall.setXPosition(moment.m10/area);
 					tennisBall.setYPosition(moment.m01/area);
@@ -257,6 +247,77 @@ void ImageProcessor::trackFilteredObject(Mat threshold,Mat HSV, Mat &cameraFeed)
 	}
 }
 
+Marker ImageProcessor::trackRobotMarker(Mat threshold,Mat HSV, Mat &cameraFeed){
+	Marker robotMarker;
+	bool objectFound = false;
+
+	Mat temp;
+	threshold.copyTo(temp);
+	//these two vectors needed for output of findContours
+	vector< vector<Point> > contours;
+	vector<Vec4i> hierarchy;
+	//find contours of filtered image using openCV findContours function
+	findContours(temp,contours,hierarchy,CV_RETR_CCOMP,CV_CHAIN_APPROX_SIMPLE );
+	//use moments method to find our filtered object
+	double refArea = 0;
+
+
+	if (hierarchy.size() > 0) {
+		int numObjects = hierarchy.size();
+		//if number of objects greater than MAX_NUM_OBJECTS we have a noisy filter
+		if(numObjects<MAX_NUM_OBJECTS){
+			for (int index = 0; index >= 0; index = hierarchy[index][0]) {
+
+				Moments moment = moments((cv::Mat)contours[index]);
+				double area = moment.m00;
+
+				//if the area is less than 20 px by 20px then it is probably just noise
+				//if the area is the same as the 3/2 of the image size, probably just a bad filter
+				//we only want the object with the largest area so we safe a reference area each
+				//iteration and compare it to the area in the next iteration.
+				if(area>MIN_OBJECT_AREA){
+
+					robotMarker.setXPosition(moment.m10/area);
+					robotMarker.setYPosition(moment.m01/area);
+
+					objectFound = true;
+				}else {
+					objectFound = false;
+				}
+				robotMarker.setValid(objectFound);
+			}
+			//let user know you found an object
+			if(objectFound ==true){
+				//draw object location on screen
+				//drawObject(tennisBalls,cameraFeed);		
+			}
+
+		}else putText(cameraFeed,"TOO MUCH NOISE! ADJUST FILTER",Point(0,50),1,2,Scalar(0,0,255),2);
+	}
+
+	return robotMarker;
+}
+
+void ImageProcessor::trackRobotState(Mat threshold1, Mat threshold2, Mat HSV, Mat &cameraFeed)
+{
+	Marker robotFrontMarker = trackRobotMarker(threshold1, HSV, cameraFeed);
+	Marker robotBackMarker = trackRobotMarker(threshold2, HSV, cameraFeed);
+
+	double x_diff = robotFrontMarker.getXPosition()-robotBackMarker.getXPosition();
+	double y_diff = robotFrontMarker.getYPosition()-robotBackMarker.getYPosition();
+
+	double robot_heading = atan2 (y_diff,x_diff);
+	double robot_heading_deg = -(robot_heading * 180 / PI);
+
+	if (robot_heading_deg < 0)
+	{
+		robot_heading_deg = 2*180 + robot_heading_deg;
+	}
+
+	putText(cameraFeed, to_string(robot_heading_deg) + " degrees",Point(0,50),1,2,Scalar(0,0,255),2);
+
+}
+
 void ImageProcessor::setCalibrationMode(bool calibrationMode)
 {
 	ImageProcessor::calibrationMode = calibrationMode;
@@ -274,27 +335,8 @@ void ImageProcessor::process()
 	
 	//Matrix to store each frame of the webcam feed
 	Mat cameraFeed;
-	Mat threshold;
+	Mat threshold, threshold_rf, threshold_rb;
 	Mat HSV;
-
-	/*
-	if (cameraInUse == WEBCAM)
-	{
-		H_MIN_YELLOW = webcamFilter[0];
-		H_MAX_YELLOW = webcamFilter[1];
-		S_MIN_YELLOW = webcamFilter[2];
-		S_MAX_YELLOW = webcamFilter[3];
-		V_MIN_YELLOW = webcamFilter[4];
-		V_MAX_YELLOW = webcamFilter[5];
-	} else {
-	*/
-		H_MIN_YELLOW = laptopFilter[0];
-		H_MAX_YELLOW = laptopFilter[1];
-		S_MIN_YELLOW = laptopFilter[2];
-		S_MAX_YELLOW = laptopFilter[3];
-		V_MIN_YELLOW = laptopFilter[4];
-		V_MAX_YELLOW = laptopFilter[5];
-	//}
 
 	if(ImageProcessor::calibrationMode==true){
 		//create slider bars for HSV filtering
@@ -303,28 +345,57 @@ void ImageProcessor::process()
 	//video capture object to acquire webcam feed
 	VideoCapture capture;
 	//open capture object at location zero (default location for webcam)
-	capture.open(cameraInUse);
+	capture.open(0);
 	//set height and width of capture frame
-	capture.set(CV_CAP_PROP_FRAME_WIDTH,FRAME_WIDTH);
 	capture.set(CV_CAP_PROP_FRAME_HEIGHT,FRAME_HEIGHT);
+	capture.set(CV_CAP_PROP_FRAME_WIDTH,FRAME_WIDTH);
 	//start an infinite loop where webcam feed is copied to cameraFeed matrix
 	//all of our operations will be performed within this loop
 	while(1)
 	{
 		//store image to matrix
 		capture.read(cameraFeed);
-		//convert frame from BGR to HSV colorspace
-		cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
-		inRange(HSV,Scalar(H_MIN_YELLOW,S_MIN_YELLOW,V_MIN_YELLOW),Scalar(H_MAX_YELLOW,S_MAX_YELLOW,V_MAX_YELLOW),threshold);
-		if(useMorphOps)
-			morphOps(threshold);
 
-		if(ImageProcessor::calibrationMode==true){
-			//if in calibration mode, we track objects based on the HSV slider values.
+		if (ImageProcessor::calibrationMode==true)
+		{
+			//convert frame from BGR to HSV colorspace
+			cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+
+
+			inRange(HSV,Scalar(H_MIN,S_MIN,V_MIN),Scalar(H_MAX,S_MAX,V_MAX),threshold);
+			if(useMorphOps)
+				morphOps(threshold);
+
 			imshow(windowName2,threshold);
-		}
 
-		trackFilteredObject(threshold,HSV,cameraFeed);
+			trackFilteredObject(threshold,HSV,cameraFeed);
+		} else {
+
+			Marker tennisBall, robotFront, robotBack;
+
+			robotFront.setHSVMin(Scalar(42,65,0));
+			robotFront.setHSVMax(Scalar(77,132,256));
+
+			robotBack.setHSVMin(Scalar(67,170,0));
+			robotBack.setHSVMax(Scalar(107,210,256));
+
+
+			//cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+			//inRange(HSV,tennisBall.getHSVMin(),tennisBall.getHSVMax(),threshold);
+			//morphOps(threshold);
+			//trackFilteredObject(threshold,HSV,cameraFeed);
+			
+			cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+			inRange(HSV,robotFront.getHSVMin(),robotFront.getHSVMax(),threshold_rf);
+			morphOps(threshold_rf);
+
+			cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+			inRange(HSV,robotBack.getHSVMin(),robotBack.getHSVMax(),threshold_rb);
+			morphOps(threshold_rb);
+			
+			trackRobotState(threshold_rf, threshold_rb, HSV, cameraFeed);
+
+		}
 
 		//show frames 
 		//imshow(windowName2,threshold);

@@ -481,7 +481,9 @@ namespace TennisBallCollection {
 				button12->FlatStyle = FlatStyle::Flat;
 				enableManualButtons(false);
 
-				(*ipPointer).setEnable(false);
+				(*ipPointer).setCalibrationMode(false);
+				(*ipPointer).setEnable(true);
+				(*ipPointer).process();
 			}
 		private: 
 			System::Void button1_Click(System::Object^  sender, System::EventArgs^  e)
