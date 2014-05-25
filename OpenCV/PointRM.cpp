@@ -1,14 +1,14 @@
 #include "PointRM.h"
 
 
-//RobotMath::Point::Point(void)
-//{
-//}
+RobotMath::Point::Point(void)
+{
+}
 
 
-//RobotMath::Point::~Point(void)
-//{
-//}
+RobotMath::Point::~Point(void)
+{
+}
 
 int RobotMath::Point::getXPosition()
 {

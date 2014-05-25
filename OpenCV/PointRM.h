@@ -4,8 +4,8 @@
 
 class RobotMath::Point {
 	public:
-		//Point(void);
-		//~Point(void);
+		Point(void);
+		~Point(void);
 
 		int getXPosition();
 		void setXPosition(int x);
