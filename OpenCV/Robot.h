@@ -6,6 +6,7 @@
 
 #include "RobotMath.h"
 #include "PointRM.h"
+#include "LineRM.h"
 
 using namespace cv;
 
@@ -18,10 +19,17 @@ public:
 	double getAbsoluteHeading();
 	void setAbsoluteHeading(double h);
 
+	void setCorners(int* ix, int* iy);
+
+	bool* verifyIfRobotInZone(RobotMath::Line* ifences);
+
 private:
 	bool valid;
 	double xPos, yPos, heading;
-	
+
+	RobotMath::Point corners[4];
+
+	RobotMath::Line fences[4];
 };
 
 
