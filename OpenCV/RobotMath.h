@@ -7,15 +7,16 @@ using namespace std;
 namespace RobotMath
 {
 	class Point;
+	class Line;
 
-	void findSlopeOfLine(Point pt1, Point pt2);
-	void function2();
-	void function3();
+	Line findLine(Point pt1, Point pt2);
 
-	template<typename T>
-	void function4()
-	{
-		//function template definition should be here!
-	}
+	double findAbsoluteHeading(Point pt1, Point pt2);
+
+	Point findClosestPointToLine(Point pt, Line tLn);
+
+	double findShortestDistanceToLine(Point pt, Line tLn);
+
+	double findDistanceBetweenTwoPoints(Point pt1, Point pt2);
 
 }
