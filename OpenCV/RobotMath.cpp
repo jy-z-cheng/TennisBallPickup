@@ -62,7 +62,7 @@ namespace RobotMath
 		dy = pt2.getYPosition() - pt1.getYPosition();
 		dx = pt2.getXPosition() - pt1.getXPosition();
 
-		heading = atan2(dy, dx);
+		heading = -atan2(dy, dx);
 
 		if (heading < 0)
 		{

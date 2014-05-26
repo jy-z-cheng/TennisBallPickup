@@ -307,7 +307,7 @@ void ImageProcessor::trackRobotState(Mat threshold1, Mat threshold2, Mat HSV, Ma
 	double x_diff = robotFrontMarker.getXPosition()-robotBackMarker.getXPosition();
 	double y_diff = robotFrontMarker.getYPosition()-robotBackMarker.getYPosition();
 
-	double robot_heading = atan2 (y_diff,x_diff);
+	double robot_heading = -atan2 (y_diff,x_diff);
 
 	if (robot_heading < 0)
 	{
@@ -394,8 +394,8 @@ void ImageProcessor::process()
 		capture.read(cameraFeed);
 		
 		Marker tennisBall;
-		tennisBall.setHSVMin(Scalar(39,40,0));
-		tennisBall.setHSVMax(Scalar(56,256,256));
+		tennisBall.setHSVMin(Scalar(30,95,0));		//39,40,0));
+		tennisBall.setHSVMax(Scalar(61,195,256));	//56,256,256));
 
 		if (ImageProcessor::calibrationMode==true)
 		{
@@ -422,11 +422,11 @@ void ImageProcessor::process()
 
 				Marker robotFront, robotBack;
 
-				robotFront.setHSVMin(Scalar(42,65,0));
-				robotFront.setHSVMax(Scalar(77,132,256));
+				robotFront.setHSVMin(Scalar(51,63,0)); //42,65,0));
+				robotFront.setHSVMax(Scalar(86,63,0)); //77,132,256));
 
-				robotBack.setHSVMin(Scalar(67,170,0));
-				robotBack.setHSVMax(Scalar(107,210,256));
+				robotBack.setHSVMin(Scalar(100,137,139)); //67,170,0));
+				robotBack.setHSVMax(Scalar(107,184, 240)); //107,210,256));
 			
 				cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
 				inRange(HSV,robotFront.getHSVMin(),robotFront.getHSVMax(),threshold_rf);

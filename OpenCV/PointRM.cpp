@@ -33,6 +33,6 @@ int RobotMath::Point::getYPositionOriginal()
 void RobotMath::Point::setYPosition(int y)
 {
 	RobotMath::Point::yPos_original = y;
-	RobotMath::Point::yPos_normalized = 720-y;
+	RobotMath::Point::yPos_normalized = y;
 }
 
