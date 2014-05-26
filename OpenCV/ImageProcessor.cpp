@@ -119,8 +119,9 @@ void ImageProcessor::createTrackbars(){
 void ImageProcessor::drawObject(vector<Marker> theTennisBalls,Mat &frame){
 
 	for (int i = 0; i < theTennisBalls.size(); i++) {
-		cv::circle(frame,cv::Point(theTennisBalls.at(i).getXPosition(),theTennisBalls.at(i).getYPosition()),20,cv::Scalar(0,0,255));
-		cv::putText(frame,intToString(theTennisBalls.at(i).getXPosition())+ " , " + intToString(theTennisBalls.at(i).getYPosition()),cv::Point(theTennisBalls.at(i).getXPosition(),theTennisBalls.at(i).getYPosition()+20),1,1,Scalar(0,255,0));
+		cv::circle(frame,cv::Point(theTennisBalls.at(i).getXPosition(),theTennisBalls.at(i).getYPositionOriginal()),20,cv::Scalar(0,0,255));
+		cv::putText(frame,intToString(theTennisBalls.at(i).getXPosition())+ " , " + intToString(theTennisBalls.at(i).getYPosition()),
+			cv::Point(theTennisBalls.at(i).getXPosition(),theTennisBalls.at(i).getYPositionOriginal()+20),1,1,Scalar(0,255,0));
 	}
 }
 
@@ -306,7 +307,7 @@ void ImageProcessor::trackRobotState(Mat threshold1, Mat threshold2, Mat HSV, Ma
 	double x_diff = robotFrontMarker.getXPosition()-robotBackMarker.getXPosition();
 	double y_diff = robotFrontMarker.getYPosition()-robotBackMarker.getYPosition();
 
-	double robot_heading = -atan2 (y_diff,x_diff);
+	double robot_heading = atan2 (y_diff,x_diff);
 
 	if (robot_heading < 0)
 	{
@@ -320,6 +321,8 @@ void ImageProcessor::trackRobotState(Mat threshold1, Mat threshold2, Mat HSV, Ma
 	theRobot.setXPosition(robotBackMarker.getXPosition());
 	theRobot.setYPosition(robotBackMarker.getYPosition());
 	theRobot.setAbsoluteHeading(robot_heading);
+
+	//theRobot.setCorners([], []);
 
 
 	putText(cameraFeed, "(" + to_string(theRobot.getXPosition()) + "," + to_string(theRobot.getYPosition()) + "," 
@@ -345,6 +348,10 @@ void ImageProcessor::process()
 {
 	switch(navMode)
 	{
+		case ImageProcessor::MODE_CALIBRATION:
+			setCalibrationMode(true);
+			setEnable(false);
+			break;
 		case ImageProcessor::MODE_LOCAL:
 			setCalibrationMode(false);
 			setEnable(true);

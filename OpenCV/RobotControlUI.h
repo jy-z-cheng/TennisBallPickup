@@ -19,7 +19,8 @@ namespace TennisBallCollection {
 	{
 		private:
 			MotorController* mcPointer;
-		private:
+	private: System::Windows::Forms::Button^  button13;
+	private:
 			ImageProcessor* ipPointer;
 		public:
 			RobotControlUI(MotorController &mc, ImageProcessor &ip): mcPointer(&mc), ipPointer(&ip)
@@ -112,6 +113,7 @@ namespace TennisBallCollection {
 				this->button8 = (gcnew System::Windows::Forms::Button());
 				this->button9 = (gcnew System::Windows::Forms::Button());
 				this->label1 = (gcnew System::Windows::Forms::Label());
+				this->button13 = (gcnew System::Windows::Forms::Button());
 				this->tableLayoutPanel1->SuspendLayout();
 				this->tableLayoutPanel3->SuspendLayout();
 				this->tableLayoutPanel5->SuspendLayout();
@@ -172,6 +174,7 @@ namespace TennisBallCollection {
 				this->tableLayoutPanel5->Controls->Add(this->button10, 1, 0);
 				this->tableLayoutPanel5->Controls->Add(this->button11, 3, 0);
 				this->tableLayoutPanel5->Controls->Add(this->button12, 5, 0);
+				this->tableLayoutPanel5->Controls->Add(this->button13, 5, 4);
 				this->tableLayoutPanel5->Location = System::Drawing::Point(3, 24);
 				this->tableLayoutPanel5->Name = L"tableLayoutPanel5";
 				this->tableLayoutPanel5->RowCount = 6;
@@ -391,6 +394,16 @@ namespace TennisBallCollection {
 				this->label1->TabIndex = 1;
 				this->label1->Text = L"Manual Control";
 				// 
+				// button13
+				// 
+				this->button13->Location = System::Drawing::Point(187, 149);
+				this->button13->Name = L"button13";
+				this->button13->Size = System::Drawing::Size(65, 57);
+				this->button13->TabIndex = 3;
+				this->button13->Text = L"Calibration";
+				this->button13->UseVisualStyleBackColor = true;
+				this->button13->Click += gcnew System::EventHandler(this, &RobotControlUI::button13_Click);
+				// 
 				// RobotControlUI
 				// 
 				this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -417,6 +430,7 @@ namespace TennisBallCollection {
 				button10->FlatStyle = FlatStyle::Standard;
 				button11->FlatStyle = FlatStyle::Standard;
 				button12->FlatStyle = FlatStyle::Standard;
+				button13->FlatStyle = FlatStyle::Standard;
 			}
 
 		private:
@@ -483,6 +497,18 @@ namespace TennisBallCollection {
 				(*ipPointer).setNavigationMode(ImageProcessor::MODE_GLOBAL);
 				(*ipPointer).process();
 			}
+
+		private:
+			System::Void button13_Click(System::Object^  sender, System::EventArgs^  e)
+			{
+				resetModeButtons();
+				button12->FlatStyle = FlatStyle::Flat;
+				enableManualButtons(false);
+
+				(*ipPointer).setNavigationMode(ImageProcessor::MODE_CALIBRATION);
+				(*ipPointer).process();
+			}
+
 		private: 
 			System::Void button1_Click(System::Object^  sender, System::EventArgs^  e)
 			{
