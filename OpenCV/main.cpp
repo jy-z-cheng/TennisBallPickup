@@ -20,28 +20,28 @@ using namespace System::Windows::Forms;
 int main(int argc, char* argv[])
 {
 
-	MotorController motorController;
-	motorController.connect("\\\\.\\COM10", CBR_115200);
+    MotorController motorController;
+    motorController.connect("\\\\.\\COM10", CBR_115200);
 
-	ImageProcessor imageProcessor(motorController);
+    ImageProcessor imageProcessor(motorController);
 
-	//motorController.setUltraSonicSensor("\\\\.\\COM17", CBR_9600);
-	//motorController.initializeUltraSonicSensor();
-	
-	Application::EnableVisualStyles();
+    //motorController.setUltraSonicSensor("\\\\.\\COM17", CBR_9600);
+    //motorController.initializeUltraSonicSensor();
+    
+    Application::EnableVisualStyles();
     Application::SetCompatibleTextRenderingDefault(false);
 
-	TennisBallCollection::RobotControlUI form(motorController, imageProcessor);
+    TennisBallCollection::RobotControlUI form(motorController, imageProcessor);
     Application::Run(%form);
 
-	/*
-		
-	MotorController mC;
-	mC.start("\\\\.\\COM17");
+    /*
+        
+    MotorController mC;
+    mC.start("\\\\.\\COM17");
 
-	ImageProcessor ip(mC);
-	ip.process();
-	*/
+    ImageProcessor ip(mC);
+    ip.process();
+    */
 
-	return 0;
+    return 0;
 }

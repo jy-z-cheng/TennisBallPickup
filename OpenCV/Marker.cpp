@@ -12,30 +12,30 @@ Marker::~Marker(void)
 
 Scalar Marker::getHSVMin()
 {
-	return Marker::hsvMin;
+    return Marker::hsvMin;
 }
 
 void Marker::setHSVMin(Scalar ihsvMin)
 {
-	Marker::hsvMin = ihsvMin;
+    Marker::hsvMin = ihsvMin;
 }
 
 Scalar Marker::getHSVMax()
 {
-	return Marker::hsvMax;
+    return Marker::hsvMax;
 }
 
 void Marker::setHSVMax(Scalar ihsvMax)
 {
-	Marker::hsvMax = ihsvMax;
+    Marker::hsvMax = ihsvMax;
 }
 
 bool Marker::isValid()
 {
-	return Marker::valid;
+    return Marker::valid;
 }
 
 void Marker::setValid(bool iValid)
 {
-	Marker::valid = iValid;
+    Marker::valid = iValid;
 }

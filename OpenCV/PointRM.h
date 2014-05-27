@@ -3,17 +3,17 @@
 #include "RobotMath.h"
 
 class RobotMath::Point {
-	public:
-		Point(void);
-		~Point(void);
+    public:
+        Point(void);
+        ~Point(void);
 
-		int getXPosition();
-		void setXPosition(int x);
+        int getXPosition();
+        void setXPosition(int x);
 
-		int getYPosition();
-		void setYPosition(int y);
+        int getYPosition();
+        void setYPosition(int y);
 
-	private:
-		int xPos, yPos;
+    private:
+        int xPos, yPos;
 };
 

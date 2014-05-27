@@ -7,14 +7,14 @@
 class ObstacleDetector
 {
 public:
-	ObstacleDetector(void);
-	~ObstacleDetector(void);
+    ObstacleDetector(void);
+    ~ObstacleDetector(void);
 
-	bool connect(char *portName, DWORD baudRate);
+    bool connect(char *portName, DWORD baudRate);
 
-	void readState();
+    void readState();
 
 
 private:
-	Serial* SP;
+    Serial* SP;
 };
