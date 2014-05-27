@@ -37,7 +37,8 @@ private:
 	//void on_trackbar( int, void* );
 	string intToString(int number);
 	void createTrackbars();
-	void drawObject(vector<Marker> theTennisBalls,Mat &frame);
+	void drawObject(Marker theMarker,Mat &frame);
+	void drawObjects(vector<Marker> theTennisBalls,Mat &frame);
 	void morphOps(Mat &thresh);
 	int checkPosition(bool haveBall, Marker tennisBall);
 	void trackFilteredObject(Mat threshold,Mat HSV, Mat &cameraFeed);

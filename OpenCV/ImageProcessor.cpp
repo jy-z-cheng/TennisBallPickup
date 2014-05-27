@@ -116,12 +116,20 @@ void ImageProcessor::createTrackbars(){
 
 
 }
-void ImageProcessor::drawObject(vector<Marker> theTennisBalls,Mat &frame){
+
+void ImageProcessor::drawObject(Marker theMarker,Mat &frame){
+
+	cv::circle(frame,cv::Point(theMarker.getXPosition(),theMarker.getYPosition()),20,cv::Scalar(0,0,255));
+	cv::putText(frame,intToString(theMarker.getXPosition())+ " , " + intToString(theMarker.getYPosition()),
+		cv::Point(theMarker.getXPosition(),theMarker.getYPosition()+20),1,1,Scalar(0,255,0));
+}
+
+void ImageProcessor::drawObjects(vector<Marker> theTennisBalls,Mat &frame){
 
 	for (int i = 0; i < theTennisBalls.size(); i++) {
-		cv::circle(frame,cv::Point(theTennisBalls.at(i).getXPosition(),theTennisBalls.at(i).getYPositionOriginal()),20,cv::Scalar(0,0,255));
+		cv::circle(frame,cv::Point(theTennisBalls.at(i).getXPosition(),theTennisBalls.at(i).getYPosition()),20,cv::Scalar(0,0,255));
 		cv::putText(frame,intToString(theTennisBalls.at(i).getXPosition())+ " , " + intToString(theTennisBalls.at(i).getYPosition()),
-			cv::Point(theTennisBalls.at(i).getXPosition(),theTennisBalls.at(i).getYPositionOriginal()+20),1,1,Scalar(0,255,0));
+			cv::Point(theTennisBalls.at(i).getXPosition(),theTennisBalls.at(i).getYPosition()+20),1,1,Scalar(0,255,0));
 	}
 }
 
@@ -232,7 +240,7 @@ void ImageProcessor::trackFilteredObject(Mat threshold,Mat HSV, Mat &cameraFeed)
 			//let user know you found an object
 			if(objectFound ==true){
 				//draw object location on screen
-				drawObject(tennisBalls,cameraFeed);		
+				drawObjects(tennisBalls,cameraFeed);
 			}
 
 		}else putText(cameraFeed,"TOO MUCH NOISE! ADJUST FILTER",Point(0,50),1,2,Scalar(0,0,255),2);
@@ -290,7 +298,7 @@ Marker ImageProcessor::trackRobotMarker(Mat threshold,Mat HSV, Mat &cameraFeed){
 			//let user know you found an object
 			if(objectFound ==true){
 				//draw object location on screen
-				//drawObject(tennisBalls,cameraFeed);		
+				//drawObjects(tennisBalls,cameraFeed);		
 			}
 
 		}else putText(cameraFeed,"TOO MUCH NOISE! ADJUST FILTER",Point(0,50),1,2,Scalar(0,0,255),2);
@@ -304,29 +312,60 @@ void ImageProcessor::trackRobotState(Mat threshold1, Mat threshold2, Mat HSV, Ma
 	Marker robotFrontMarker = trackRobotMarker(threshold1, HSV, cameraFeed);
 	Marker robotBackMarker = trackRobotMarker(threshold2, HSV, cameraFeed);
 
-	double x_diff = robotFrontMarker.getXPosition()-robotBackMarker.getXPosition();
-	double y_diff = robotFrontMarker.getYPosition()-robotBackMarker.getYPosition();
-
-	double robot_heading = -atan2 (y_diff,x_diff);
-
-	if (robot_heading < 0)
+	if (robotFrontMarker.isValid() && robotBackMarker.isValid())
 	{
-		robot_heading = 2*PI + robot_heading;
+
+		double x_diff = robotFrontMarker.getXPosition()-robotBackMarker.getXPosition();
+		double y_diff = robotFrontMarker.getYPosition()-robotBackMarker.getYPosition();
+
+		double robot_heading = -atan2 (y_diff,x_diff);
+
+		if (robot_heading < 0)
+		{
+			robot_heading = 2*PI + robot_heading;
+		}
+
+		double robot_heading_deg = (robot_heading * 180 / PI);
+
+		Robot theRobot;
+
+		theRobot.setXPosition(robotBackMarker.getXPosition());
+		theRobot.setYPosition(robotBackMarker.getYPosition());
+		theRobot.setAbsoluteHeading(robot_heading);
+
+		int xS[4] = {200,1080,1080,200};
+		int yS[4] = {670,670,150,150};
+
+		theRobot.setCorners(xS, yS);
+
+		bool *borderChecks = theRobot.verifyIfRobotInZone();
+
+		int sum = 0;
+		for (int ind=0; ind < 4; ind ++)
+		{
+			sum += borderChecks[ind];
+		}
+
+		// This part should be the closest ball
+		Marker robot_pos;
+		robot_pos.setXPosition(theRobot.getXPosition());
+		robot_pos.setYPosition(theRobot.getYPosition());
+
+		RobotMath::Point goalPt = theRobot.determineGoal(robot_pos);
+		Marker goal;
+		goal.setXPosition(goalPt.getXPosition());
+		goal.setYPosition(goalPt.getYPosition());
+
+		drawObject(robotBackMarker,cameraFeed);	
+
+		drawObject(goal,cameraFeed);	
+
+		putText(cameraFeed, "(Verified " + to_string(sum) + " borders)",Point(0,50),1,2,Scalar(0,0,255),2);
+
+		//putText(cameraFeed, "(" + to_string(theRobot.getXPosition()) + "," + to_string(theRobot.getYPosition()) + "," 
+		//	+ to_string(robot_heading_deg) + " degrees)",Point(0,50),1,2,Scalar(0,0,255),2);
+
 	}
-
-	double robot_heading_deg = (robot_heading * 180 / PI);
-
-	Robot theRobot;
-
-	theRobot.setXPosition(robotBackMarker.getXPosition());
-	theRobot.setYPosition(robotBackMarker.getYPosition());
-	theRobot.setAbsoluteHeading(robot_heading);
-
-	//theRobot.setCorners([], []);
-
-
-	putText(cameraFeed, "(" + to_string(theRobot.getXPosition()) + "," + to_string(theRobot.getYPosition()) + "," 
-		+ to_string(robot_heading_deg) + " degrees",Point(0,50),1,2,Scalar(0,0,255),2);
 }
 
 void ImageProcessor::setNavigationMode(int nmode)
@@ -422,11 +461,11 @@ void ImageProcessor::process()
 
 				Marker robotFront, robotBack;
 
-				robotFront.setHSVMin(Scalar(51,63,0)); //42,65,0));
-				robotFront.setHSVMax(Scalar(86,63,0)); //77,132,256));
+				robotFront.setHSVMin(Scalar(42,65,0)); //39,63,0));
+				robotFront.setHSVMax(Scalar(77,132,256)); //86,256,256));
 
-				robotBack.setHSVMin(Scalar(100,137,139)); //67,170,0));
-				robotBack.setHSVMax(Scalar(107,184, 240)); //107,210,256));
+				robotBack.setHSVMin(Scalar(67,170,0)); //100,137,139));
+				robotBack.setHSVMax(Scalar(107,210,256)); //107,184, 240));
 			
 				cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
 				inRange(HSV,robotFront.getHSVMin(),robotFront.getHSVMax(),threshold_rf);
@@ -435,6 +474,7 @@ void ImageProcessor::process()
 				cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
 				inRange(HSV,robotBack.getHSVMin(),robotBack.getHSVMax(),threshold_rb);
 				morphOps(threshold_rb);
+
 				imshow(windowName2,threshold_rb);
 			
 				trackRobotState(threshold_rf, threshold_rb, HSV, cameraFeed);

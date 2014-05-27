@@ -34,7 +34,7 @@ namespace RobotMath
 			a = 1;
 			m = 0;
 
-			message = "x = " + to_string(-b);
+			message = "y = " + to_string(b);
 		}
 		else
 		{
@@ -45,7 +45,7 @@ namespace RobotMath
 			message = "y = " + to_string(m) + " * x + " + to_string(b);
 		}
 
-		//printf("%s", message.c_str);
+		//printf("%s \n", message.c_str());
 
 		theLine.a = a;
 		theLine.b = b;

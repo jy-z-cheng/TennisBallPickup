@@ -21,15 +21,23 @@ public:
 
 	void setCorners(int* ix, int* iy);
 
-	bool* verifyIfRobotInZone(RobotMath::Line* ifences);
+	bool* verifyIfRobotInZone();
+
+	RobotMath::Point getMidpoint();
+
+	RobotMath::Point determineGoal(Point nextBall);
 
 private:
 	bool valid;
-	double xPos, yPos, heading;
+	double heading;
 
 	RobotMath::Point corners[4];
 
 	RobotMath::Line fences[4];
+
+	bool borderChecks[4];
+
+	RobotMath::Point midpoint;
 };
 
 

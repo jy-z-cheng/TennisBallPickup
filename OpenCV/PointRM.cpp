@@ -12,27 +12,21 @@ RobotMath::Point::~Point(void)
 
 int RobotMath::Point::getXPosition()
 {
-	return RobotMath::Point::xPos_normalized;
+	return RobotMath::Point::xPos;
 }
 
 void RobotMath::Point::setXPosition(int x)
 {
-	RobotMath::Point::xPos_normalized = x;
+	RobotMath::Point::xPos = x;
 }
 
 int RobotMath::Point::getYPosition()
 {
-	return RobotMath::Point::yPos_normalized;
-}
-
-int RobotMath::Point::getYPositionOriginal()
-{
-	return RobotMath::Point::yPos_original;
+	return RobotMath::Point::yPos;
 }
 
 void RobotMath::Point::setYPosition(int y)
 {
-	RobotMath::Point::yPos_original = y;
-	RobotMath::Point::yPos_normalized = y;
+	RobotMath::Point::yPos = y;
 }
 

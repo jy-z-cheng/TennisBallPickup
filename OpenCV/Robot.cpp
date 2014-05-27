@@ -1,9 +1,9 @@
 #include "Robot.h"
 
-const int TOP = 1;
-const int RIGHT = 2;
-const int BOTTOM = 3;
-const int LEFT = 4;
+const int TOP = 0;
+const int RIGHT = 1;
+const int BOTTOM = 2;
+const int LEFT = 3;
 
 Robot::Robot(void)
 {
@@ -38,17 +38,16 @@ void Robot::setCorners(int* ix, int* iy)
 	for (int ind = 0; ind < 4; ind++)
 	{
 		int nextInd = ind + 1;
-		if (nextInd > 4)
+		if (nextInd >= 4)
 		{
-			nextInd = 1;
+			nextInd = 0;
 		}
 		Robot::fences[ind] = RobotMath::findLine(corners[ind], corners[nextInd]);
 	}
 }
 
-bool* Robot::verifyIfRobotInZone(RobotMath::Line* ifences)
+bool* Robot::verifyIfRobotInZone()
 {
-	*Robot::fences = *ifences;
 
 	bool borderCheck[4] = {0, 0, 0, 0};
 
@@ -70,19 +69,19 @@ bool* Robot::verifyIfRobotInZone(RobotMath::Line* ifences)
 			}
             else
 			{
-                refY=m*Robot::xPos+b;
+                refY=m*Robot::getXPosition()+b;
 			}
             
             if (ind==TOP)
 			{
-                if (Robot::yPos <= refY)
+                if (Robot::getYPosition() <= refY)
 				{
                     borderCheck[ind] = 1;
 				}
 			}
             else
 			{
-                if (Robot::yPos > refY)
+                if (Robot::getYPosition() > refY)
 				{
                     borderCheck[ind] = 1;
 				}
@@ -96,24 +95,84 @@ bool* Robot::verifyIfRobotInZone(RobotMath::Line* ifences)
 			}
             else
 			{
-                refX=(Robot::yPos-b)/m;
+                refX=(Robot::getYPosition()-b)/m;
 			}
             
             if (ind==RIGHT)
 			{
-                if (Robot::xPos <= refX)
+                if (Robot::getXPosition() <= refX)
 				{
                     borderCheck[ind] = 1;
 				}
 			}
             else
 			{
-                if (Robot::xPos > refX)
+                if (Robot::getXPosition() > refX)
 				{
                     borderCheck[ind] = 1;
 				}
 			}            
 		}
 	}
+
+	copy(borderCheck, borderCheck+4, Robot::borderChecks);
+
 	return borderCheck;
+}
+
+RobotMath::Point Robot::getMidpoint()
+{
+	double xSum = 0;
+	double ySum = 0;
+
+
+
+	for (int ind = 0; ind < 4; ind++)
+	{
+		xSum = Robot::corners[ind].getXPosition();
+		ySum = Robot::corners[ind].getYPosition();
+	}
+
+	Robot::midpoint.setXPosition(xSum/4.0);
+	Robot::midpoint.setXPosition(ySum/4.0);
+
+	return Robot::midpoint;
+}
+
+RobotMath::Point Robot::determineGoal(Point nextBall)
+{
+	int sum = 0;
+	for (int ind=0; ind < 4; ind ++)
+	{
+		sum += borderChecks[ind];
+	}
+
+	if ( sum == 4 )
+	{
+		return nextBall;
+	}
+	else if ( sum == 2 )
+	{
+		return Robot::midpoint;
+	}
+	else if ( sum == 3 )
+	{
+		int vilatedInd = 0;
+
+		for (int ind=0; ind < 4; ind ++)
+		{
+			if ( borderChecks[ind] == 0 )
+			{
+				vilatedInd = ind;
+				break;
+			}
+		}
+
+		RobotMath::Point robot_pos;
+		robot_pos.setXPosition(Robot::getXPosition());
+		robot_pos.setYPosition(Robot::getYPosition());
+
+		return RobotMath::findClosestPointToLine(robot_pos, fences[vilatedInd]);
+	}
+
 }

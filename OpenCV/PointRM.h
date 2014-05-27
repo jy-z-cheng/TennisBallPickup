@@ -11,10 +11,9 @@ class RobotMath::Point {
 		void setXPosition(int x);
 
 		int getYPosition();
-		int getYPositionOriginal();
 		void setYPosition(int y);
 
 	private:
-		int xPos_normalized, yPos_normalized, yPos_original;
+		int xPos, yPos;
 };
 
