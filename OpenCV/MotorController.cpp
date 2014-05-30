@@ -54,27 +54,27 @@ void MotorController::sendRawCommand (int command)
             printf("move backward\n");
             break;
         case MotorController::POINTTURN_LEFT:
-            SP->WriteData("Z",dataLength);
+            SP->WriteData("A",dataLength);
             printf("point turn left\n");
             break;
         case MotorController::POINTTURN_RIGHT:
-            SP->WriteData("C",dataLength);
+            SP->WriteData("D",dataLength);
             printf("point turn right\n");
             break;
         case MotorController::SWINGTURN_LEFT:
-            SP->WriteData("A",dataLength);
+            SP->WriteData("Q",dataLength);
             printf("swing turn left\n");
             break;
         case MotorController::SWINGTURN_RIGHT:
-            SP->WriteData("D",dataLength);
+            SP->WriteData("E",dataLength);
             printf("swing turn right\n");
             break;
         case MotorController::CRUDETURN_LEFT:
-            SP->WriteData("Q",dataLength);
+            SP->WriteData("Z",dataLength);
             printf("crude turn left\n");
             break;
         case MotorController::CRUDETURN_RIGHT:
-            SP->WriteData("E",dataLength);
+            SP->WriteData("C",dataLength);
             printf("crude turn right\n");
             break;
         case MotorController::NOTFOUND_PATROL:
