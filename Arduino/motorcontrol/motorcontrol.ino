@@ -51,9 +51,9 @@ void serialEvent()
       arduinoMotorController._pointTurn(currentSpeed/2);
     } else if (incomingByte == 'D') {
       arduinoMotorController._pointTurn(-currentSpeed/2);
-    } else if (incomingByte == 'Z') {
-      arduinoMotorController._crudeTurn(currentSpeed);
     } else if (incomingByte == 'C') {
+      arduinoMotorController._crudeTurn(currentSpeed);
+    } else if (incomingByte == 'Z') {
       arduinoMotorController._crudeTurn(-currentSpeed);
     } else if (incomingByte == 'L') {
       arduinoMotorController._crudeTurn(290);
