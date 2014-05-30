@@ -5,6 +5,11 @@ RobotMath::Point::Point(void)
 {
 }
 
+RobotMath::Point::Point(int x, int y)
+{
+	RobotMath::Point::xPos = x;
+	RobotMath::Point::yPos = y;
+}
 
 RobotMath::Point::~Point(void)
 {

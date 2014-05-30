@@ -5,6 +5,7 @@
 class RobotMath::Point {
     public:
         Point(void);
+		Point(int x, int y);
         ~Point(void);
 
         int getXPosition();
