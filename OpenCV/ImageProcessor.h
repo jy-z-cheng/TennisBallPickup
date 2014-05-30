@@ -25,7 +25,7 @@ public:
     void setCalibrationMode(bool enable);
     void setEnable(bool enable);
     void setNavigationMode(int nmode);
-    enum TennisBallLocation { TENNISBALL_NOTFOUND, TENNISBALL_FRONT, TENNISBALL_LEFT, TENNISBALL_RIGHT };
+    enum TennisBallLocation { TENNISBALL_NOTFOUND, TENNISBALL_FRONT, TENNISBALL_LEFT, TENNISBALL_RIGHT, TENNISBALL_IDLE };
     enum NavigationMode { MODE_CALIBRATION, MODE_LOCAL, MODE_GLOBAL};
 
 private:
@@ -38,9 +38,10 @@ private:
     string intToString(int number);
     void createTrackbars();
 
-    void drawObject(Marker theMarker,Mat &frame, string tag, Scalar colour);
-    void drawObjects(vector<Marker> theTennisBalls,Mat &frame);
-    void drawLine(Marker theMarker1, Marker theMarker2, Mat &frame, Scalar colour);
+    void drawObject(RobotMath::Point thePoint,Mat &frame, string tag, Scalar colour);
+    void drawObjects(vector<Marker> thePoints,Mat &frame);
+    //void drawObjects(vector<RobotMath::Point> thePoints,Mat &frame);
+    void drawLine(RobotMath::Point thePoint1, RobotMath::Point thePoint2, Mat &frame, Scalar colour);
 
 	void morphOps(Mat &thresh);
     

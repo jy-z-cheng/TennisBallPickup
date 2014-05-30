@@ -29,7 +29,7 @@
 // fish bowel - WEBCAM
 //const int laptopFilter[6] = {14, 53, 32, 256, 0, 256};
 
-int state = ImageProcessor::TENNISBALL_NOTFOUND;
+int state = ImageProcessor::TENNISBALL_IDLE;
 
 //initial min and max HSV filter values.
 //these will be changed using trackbars
@@ -117,28 +117,28 @@ void ImageProcessor::createTrackbars(){
 
 }
 
-void ImageProcessor::drawObject(Marker theMarker, Mat &frame, string tag, Scalar colour)
+void ImageProcessor::drawObject(RobotMath::Point thePoint, Mat &frame, string tag, Scalar colour)
 {
 
-    cv::circle(frame,cv::Point(theMarker.getXPosition(),theMarker.getYPosition()),20,colour);
-    cv::putText(frame,tag+" - "+intToString(theMarker.getXPosition())+ " , " + intToString(theMarker.getYPosition()),
-        cv::Point(theMarker.getXPosition(),theMarker.getYPosition()+20),1,1,colour);
+    cv::circle(frame,cv::Point(thePoint.getXPosition(),thePoint.getYPosition()),20,colour);
+    cv::putText(frame,tag+" - "+intToString(thePoint.getXPosition())+ " , " + intToString(thePoint.getYPosition()),
+        cv::Point(thePoint.getXPosition(),thePoint.getYPosition()+20),1,1,colour);
 }
 
-void ImageProcessor::drawLine(Marker theMarker1, Marker theMarker2, Mat &frame, Scalar colour)
+void ImageProcessor::drawLine(RobotMath::Point thePoint1, RobotMath::Point thePoint2, Mat &frame, Scalar colour)
 {
 
-    cv::line(frame,cv::Point(theMarker1.getXPosition(),theMarker1.getYPosition()),
-		cv::Point(theMarker2.getXPosition(),theMarker2.getYPosition()),colour);
+    cv::line(frame,cv::Point(thePoint1.getXPosition(),thePoint1.getYPosition()),
+		cv::Point(thePoint2.getXPosition(),thePoint2.getYPosition()),colour);
 }
 
-void ImageProcessor::drawObjects(vector<Marker> theTennisBalls,Mat &frame)
+void ImageProcessor::drawObjects(vector<Marker> thePoints,Mat &frame)
 {
 
-    for (int i = 0; i < theTennisBalls.size(); i++) {
-        cv::circle(frame,cv::Point(theTennisBalls.at(i).getXPosition(),theTennisBalls.at(i).getYPosition()),20,cv::Scalar(0,0,255));
-        cv::putText(frame,intToString(theTennisBalls.at(i).getXPosition())+ " , " + intToString(theTennisBalls.at(i).getYPosition()),
-            cv::Point(theTennisBalls.at(i).getXPosition(),theTennisBalls.at(i).getYPosition()+20),1,1,Scalar(0,255,0));
+    for (int i = 0; i < thePoints.size(); i++) {
+        cv::circle(frame,cv::Point(thePoints.at(i).getXPosition(),thePoints.at(i).getYPosition()),20,cv::Scalar(0,0,255));
+        cv::putText(frame,intToString(thePoints.at(i).getXPosition())+ " , " + intToString(thePoints.at(i).getYPosition()),
+            cv::Point(thePoints.at(i).getXPosition(),thePoints.at(i).getYPosition()+20),1,1,Scalar(0,255,0));
     }
 }
 
@@ -324,16 +324,7 @@ void ImageProcessor::trackRobotState(Mat threshold1, Mat threshold2, Mat HSV, Ma
 
     if (robotFrontMarker.isValid() && robotBackMarker.isValid())
     {
-
-        double x_diff = robotFrontMarker.getXPosition()-robotBackMarker.getXPosition();
-        double y_diff = robotFrontMarker.getYPosition()-robotBackMarker.getYPosition();
-
-        double robot_heading = -atan2 (y_diff,x_diff);
-
-        if (robot_heading < 0)
-        {
-            robot_heading = 2*PI + robot_heading;
-        }
+		double robot_heading = RobotMath::findAbsoluteHeading(robotBackMarker, robotFrontMarker);
 
         double robot_heading_deg = (robot_heading * 180 / PI);
 
@@ -343,8 +334,8 @@ void ImageProcessor::trackRobotState(Mat threshold1, Mat threshold2, Mat HSV, Ma
         theRobot.setYPosition(robotBackMarker.getYPosition());
         theRobot.setAbsoluteHeading(robot_heading);
 
-        int xS[4] = {200,1080,1080,200};
-        int yS[4] = {670,670,150,150};
+		int xS[4] = {348,  613, 580, 320}; //{200,1080,1080,200};
+		int yS[4] = {420, 450, 23, 29}; //{670,670,150,150};
 
         theRobot.setCorners(xS, yS);
 
@@ -358,17 +349,38 @@ void ImageProcessor::trackRobotState(Mat threshold1, Mat threshold2, Mat HSV, Ma
 
         // temp
         RobotMath::Point goalPt = theRobot.determineGoal(robotBackMarker);
-        Marker goal;
-        goal.setXPosition(goalPt.getXPosition());
-        goal.setYPosition(goalPt.getYPosition());
+
+		// Calculate the angle to move
+		double desired_heading = RobotMath::findAbsoluteHeading(robotBackMarker, goalPt);
+
+        double desired_heading_deg = (desired_heading * 180 / PI);
+
+		// Find difference and command robot
+
+
+		/////////////////////////
+		// Drawing
 
         drawObject(robotBackMarker, cameraFeed, "Robot", cv::Scalar(255,0,0));    
 
-        drawObject(goal, cameraFeed, "Goal", cv::Scalar(0,255,0));
+        drawObject(goalPt, cameraFeed, "Goal", cv::Scalar(0,255,0));
 
 		drawLine(robotBackMarker, robotFrontMarker, cameraFeed, cv::Scalar(255,0,0));
 
-        putText(cameraFeed, "(Verified " + to_string(sum) + " borders)",Point(0,50),1,2,Scalar(0,0,255),2);
+        //putText(cameraFeed, "(Verified " + to_string(sum) + " borders)",Point(0,50),1,2,Scalar(0,0,255),2);
+
+		//putText(cameraFeed, "current " + to_string(robot_heading_deg) + ", desired " + to_string(desired_heading_deg),Point(0,50),1,2,Scalar(0,0,255),2);
+
+		putText(cameraFeed, "Diff " + to_string(robot_heading_deg - desired_heading_deg), Point(0,50),1,2,Scalar(0,0,255),2);
+
+		if (robot_heading - desired_heading > 0) {
+			state = ImageProcessor::TENNISBALL_RIGHT;
+		}
+		else
+		{
+			state = ImageProcessor::TENNISBALL_LEFT;
+		}
+
 
         //putText(cameraFeed, "(" + to_string(theRobot.getXPosition()) + "," + to_string(theRobot.getYPosition()) + "," 
         //    + to_string(robot_heading_deg) + " degrees)",Point(0,50),1,2,Scalar(0,0,255),2);
@@ -441,8 +453,8 @@ void ImageProcessor::process()
         capture.read(cameraFeed);
         
         Marker tennisBall;
-        tennisBall.setHSVMin(Scalar(30,95,0));        //39,40,0));
-        tennisBall.setHSVMax(Scalar(61,195,256));    //56,256,256));
+        tennisBall.setHSVMin(Scalar(14, 61, 23));   //Scalar(30,95,0));        //night 39,40,0));
+        tennisBall.setHSVMax(Scalar(56,160,256));  //Scalar(61,195,256));    //night 56,256,256));
 
         if (ImageProcessor::calibrationMode==true)
         {
@@ -463,17 +475,19 @@ void ImageProcessor::process()
                 cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
                 inRange(HSV,tennisBall.getHSVMin(),tennisBall.getHSVMax(),threshold);
                 morphOps(threshold);
+
+				imshow(windowName2,threshold);
                 trackFilteredObject(threshold,HSV,cameraFeed);
 
             } else if (navMode == ImageProcessor::MODE_GLOBAL) {
 
                 Marker robotFront, robotBack;
 
-                robotFront.setHSVMin(Scalar(42,65,0)); //39,63,0));
-                robotFront.setHSVMax(Scalar(77,132,256)); //86,256,256));
+                robotFront.setHSVMin(Scalar(49, 33, 109)); //day 42,65,0)); //night 39,63,0));
+                robotFront.setHSVMax(Scalar(91, 103, 230)); // day 77,132,256)); //night 86,256,256));
 
-                robotBack.setHSVMin(Scalar(67,170,0)); //100,137,139));
-                robotBack.setHSVMax(Scalar(107,210,256)); //107,184, 240));
+                robotBack.setHSVMin(Scalar(100, 74, 86)); //67,170,0)); //100,137,139));
+                robotBack.setHSVMax(Scalar(147, 221, 256)); //107,210,256)); //107,184, 240));
             
                 cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
                 inRange(HSV,robotFront.getHSVMin(),robotFront.getHSVMax(),threshold_rf);
