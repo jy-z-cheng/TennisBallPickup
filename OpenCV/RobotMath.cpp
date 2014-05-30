@@ -18,7 +18,7 @@ namespace RobotMath
         double dx, dy;
 
         dx = pt2.getXPosition() - pt1.getXPosition();
-        dy = pt2.getYPosition() - pt2.getYPosition();
+        dy = pt2.getYPosition() - pt1.getYPosition();
 
         if (dx == 0)
         {
@@ -119,4 +119,5 @@ namespace RobotMath
         double distance = sqrt((pt1.getXPosition() - pt2.getXPosition())^2 + (pt1.getYPosition() - pt2.getYPosition())^2);
         return distance;
     }
+
 }
