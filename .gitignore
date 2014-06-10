@@ -10,3 +10,7 @@
 *.resources
 *.vcxproj
 *.resx
+DigitalFencing/Python/slider
+DigitalFencing/Python/ColourTracker.py
+DigitalFencing/Python/simple_colour_thresholding.py
+DigitalFencing/Python/objectDetection.py

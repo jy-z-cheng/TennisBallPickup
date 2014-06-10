@@ -40,12 +40,12 @@ int S_MAX = 256;
 int V_MIN = 0;
 int V_MAX = 256;
 //default capture width and height
-const int FRAME_WIDTH = 1280;
-const int FRAME_HEIGHT = 720;
+const int FRAME_WIDTH = 640; //1280;
+const int FRAME_HEIGHT = 480; //720;
 //max number of objects to be detected in frame
 const int MAX_NUM_OBJECTS=50;
 //minimum and maximum object area
-const int MIN_OBJECT_AREA = 20*20;
+const int MIN_OBJECT_AREA = 25*25;
 const int MAX_OBJECT_AREA = FRAME_HEIGHT*FRAME_WIDTH/1.5;
 //names that will appear at the top of each window
 const string windowName = "Original Image";
@@ -453,13 +453,15 @@ void ImageProcessor::process()
         capture.read(cameraFeed);
         
         Marker tennisBall;
-        tennisBall.setHSVMin(Scalar(14, 61, 23));   //Scalar(30,95,0));        //night 39,40,0));
-        tennisBall.setHSVMax(Scalar(56,160,256));  //Scalar(61,195,256));    //night 56,256,256));
+        tennisBall.setHSVMin(Scalar(158, 95, 40)); //23,5,168));
+			//14, 61, 23));   //Scalar(30,95,0));        //night 39,40,0));
+        tennisBall.setHSVMax(Scalar(256,167,97)); //93, 117, 256)); 
+		//56,160,256));  //Scalar(61,195,256));    //night 56,256,256));
 
         if (ImageProcessor::calibrationMode==true)
         {
             //convert frame from BGR to HSV colorspace
-            cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+            cvtColor(cameraFeed,HSV,CV_BGR2YCrCb); //COLOR_BGR2HSV); //
 
 
             inRange(HSV,Scalar(H_MIN,S_MIN,V_MIN),Scalar(H_MAX,S_MAX,V_MAX),threshold);
@@ -472,7 +474,7 @@ void ImageProcessor::process()
         } else {
 
             if (navMode == ImageProcessor::MODE_LOCAL) {
-                cvtColor(cameraFeed,HSV,COLOR_BGR2HSV);
+                cvtColor(cameraFeed,HSV,CV_BGR2YCrCb);
                 inRange(HSV,tennisBall.getHSVMin(),tennisBall.getHSVMax(),threshold);
                 morphOps(threshold);
 
